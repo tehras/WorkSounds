@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Work Sound</string>
+    <string name="enable_work_tile_title_text">Enable Work Sound</string>
+    <string name="notification_tile_tile">Notification Tile</string>
+    <string name="tile_settings">Tile Settings</string>
+    <string name="work_tile_label">Work Sound</string>
+    <string name="volume_settings">Volume Settings</string>
+    <string name="ring">Ring</string>
+    <string name="sound">Sound</string>
+    <string name="work_tile_help_text">The settings below set the values of sound values when the toggle is ON. Setting the toggle OFF will switch settings back to the previous state.</string>
+    <string name="update">Update</string>
+</resources>
