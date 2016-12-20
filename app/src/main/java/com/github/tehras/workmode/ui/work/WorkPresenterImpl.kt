@@ -1,18 +1,25 @@
 package com.github.tehras.workmode.ui.work
 
+import android.app.NotificationManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.os.Build
+import android.support.v7.app.AppCompatActivity
 import com.github.tehras.workmode.shared.PreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
 import com.github.tehras.workmode.ui.base.BaseActivity
+import com.github.tehras.workmode.ui.dndpopup.DnDDialogFragment
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import timber.log.Timber
 import javax.inject.Inject
 
 class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) : AbstractPresenter<WorkView>(), WorkPresenter {
+
+    companion object {
+        private var showedDndDialog = false
+    }
 
     private var musicControls: AudioSettings? = null
     private var soundControls: AudioSettings? = null
@@ -35,6 +42,23 @@ class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) 
 
     override fun updateMusicSettings(current: Int, max: Int) {
         PreferenceSettings.saveToPreferences(AudioSettings(max, current), AudioType.MUSIC, preferences)
+    }
+
+    override fun checkForDnDOptions(activity: BaseActivity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (!(activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted) {
+                showDnDDialog(activity)
+            }
+        }
+
+    }
+
+    private fun showDnDDialog(activity: AppCompatActivity) {
+        if (!showedDndDialog) {
+            showedDndDialog = true
+
+            DnDDialogFragment.instance().show(activity.supportFragmentManager, DnDDialogFragment::class.java.simpleName)
+        }
     }
 
     override fun retrieveWorkTileSettings() {
@@ -94,7 +118,14 @@ class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) 
             maxMusicVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
             currMusicVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-            return AudioSettings(maxMusicVolume, currMusicVolume)
+            val settings = AudioSettings(maxMusicVolume, currMusicVolume)
+
+            when (music) {
+                AudioType.MUSIC -> updateMusicSettings(currMusicVolume, maxMusicVolume)
+                AudioType.RING -> updateRingSettings(currMusicVolume, maxMusicVolume)
+            }
+
+            return settings
         }
     }
 
@@ -106,11 +137,35 @@ class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) 
             return Gson().toJson(this)
         }
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other?.javaClass != javaClass) return false
+
+            other as AudioSettings
+
+            if (maxMusicVolume != other.maxMusicVolume) return false
+            if (setMusicVolume != other.setMusicVolume) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = maxMusicVolume
+            result = 31 * result + setMusicVolume
+            return result
+        }
+
+        override fun toString(): String {
+            return "AudioSettings(maxMusicVolume=$maxMusicVolume, setMusicVolume=$setMusicVolume)"
+        }
+
         companion object {
             fun fromJson(string: String): AudioSettings {
                 return Gson().fromJson(string, AudioSettings::class.java)
             }
         }
+
+
     }
 
     enum class AudioType { RING, MUSIC }

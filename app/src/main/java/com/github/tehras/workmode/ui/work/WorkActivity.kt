@@ -60,6 +60,9 @@ class WorkActivity : PresenterActivity<WorkView, WorkPresenter>(), WorkView {
 
         presenter.retrieveWorkTileSettings()
         enable_tile_switch.setOnCheckedChangeListener { compoundButton, b ->
+
+            if (b)
+                presenter.checkForDnDOptions(this@WorkActivity)
             showVolumeSettings(b)
             work_tile_update.isEnabled = false
         }

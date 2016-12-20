@@ -7,6 +7,9 @@
     <string name="volume_settings">Volume Settings</string>
     <string name="ring">Ring</string>
     <string name="sound">Sound</string>
-    <string name="work_tile_help_text">The settings below set the values of sound values when the toggle is ON. Setting the toggle OFF will switch settings back to the previous state.</string>
+    <string name="work_tile_help_text">The settings below set the sound levels when the toggle is <b>ON</b>. Setting the toggle <b>OFF</b> will switch the sound volume back to the previous state.</string>
     <string name="update">Update</string>
+    <string name="dnd_explanation">For this function to operate properly you must give it access to change the <b>Do Not Disturb</b> option.</string>
+    <string name="enable">Enable</string>
+    <string name="skip">Skip</string>
 </resources>
