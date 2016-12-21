@@ -7,4 +7,7 @@ interface WorkView : MvpView {
     fun workTileStatus(isEnabled: Boolean)
     fun updateMusicControls(currMusicVolume: Int, maxMusicVolume: Int)
     fun updateRingControls(currMusicVolume: Int, maxMusicVolume: Int)
+    fun showSetupLayout()
+    fun showLocationEnabledLayout()
+    fun showDisabledLocation()
 }

@@ -11,8 +11,9 @@ import android.service.quicksettings.Tile.*
 import android.service.quicksettings.TileService
 import android.widget.Toast
 import com.github.tehras.workmode.R
-import com.github.tehras.workmode.shared.PreferenceSettings
-import com.github.tehras.workmode.ui.work.WorkPresenterImpl
+import com.github.tehras.workmode.shared.TilePreferenceSettings
+import com.github.tehras.workmode.ui.models.AudioSettings
+import com.github.tehras.workmode.ui.models.AudioType
 import timber.log.Timber
 
 
@@ -22,7 +23,7 @@ class WorkSettingsTileService : TileService() {
         super.onStartListening()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (!PreferenceSettings.isSharedPreferencesEnabled(getPreferences())) {
+            if (!TilePreferenceSettings.isSharedPreferencesEnabled(getPreferences())) {
                 qsTile.state = STATE_UNAVAILABLE
                 qsTile.updateTile()
             } else {
@@ -41,7 +42,7 @@ class WorkSettingsTileService : TileService() {
         } else {
             if (!(this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).isNotificationPolicyAccessGranted) {
                 Toast.makeText(this, "Cannot change due to DND mode", Toast.LENGTH_SHORT).show()
-            } else if (PreferenceSettings.isSharedPreferencesEnabled(getPreferences())) {
+            } else if (TilePreferenceSettings.isSharedPreferencesEnabled(getPreferences())) {
                 when (qsTile.state) {
                     STATE_ACTIVE -> {
                         Timber.d("activated")
@@ -74,14 +75,14 @@ class WorkSettingsTileService : TileService() {
         //change settings
         val audioManager: AudioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        val music = WorkPresenterImpl.AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
-        val sound = WorkPresenterImpl.AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
+        val music = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
+        val sound = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
 
         Timber.d("enableWork save - $music and $sound")
-        PreferenceSettings.saveLastState(music, sound, getPreferences())
+        TilePreferenceSettings.saveLastState(music, sound, getPreferences())
 
-        val sMusic = PreferenceSettings.getPreferences(WorkPresenterImpl.AudioType.MUSIC, getPreferences())
-        val sRing = PreferenceSettings.getPreferences(WorkPresenterImpl.AudioType.RING, getPreferences())
+        val sMusic = TilePreferenceSettings.getPreferences(AudioType.MUSIC, getPreferences())
+        val sRing = TilePreferenceSettings.getPreferences(AudioType.RING, getPreferences())
 
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, sMusic?.setMusicVolume ?: 0, 0)
         audioManager.setStreamVolume(AudioManager.STREAM_RING, sRing?.setMusicVolume ?: 0, AudioManager.FLAG_SHOW_UI)
@@ -91,11 +92,11 @@ class WorkSettingsTileService : TileService() {
         //go back to previous state
         val audioManager: AudioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        val sMusic = PreferenceSettings.getLastStateMusic(getPreferences())
-        val sRing = PreferenceSettings.getLastStateRing(getPreferences())
+        val sMusic = TilePreferenceSettings.getLastStateMusic(getPreferences())
+        val sRing = TilePreferenceSettings.getLastStateRing(getPreferences())
 
-        val tMusic = PreferenceSettings.getPreferences(WorkPresenterImpl.AudioType.MUSIC, getPreferences())
-        val tRing = PreferenceSettings.getPreferences(WorkPresenterImpl.AudioType.RING, getPreferences())
+        val tMusic = TilePreferenceSettings.getPreferences(AudioType.MUSIC, getPreferences())
+        val tRing = TilePreferenceSettings.getPreferences(AudioType.RING, getPreferences())
 
         Timber.d("disable work - $sMusic and $sRing")
         if (sMusic?.equals(tMusic) ?: false && sRing?.equals(tRing) ?: false) {
@@ -110,15 +111,15 @@ class WorkSettingsTileService : TileService() {
     private fun isWorkMode(): Boolean {
         val audioManager: AudioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-        val music = WorkPresenterImpl.AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
-        val sound = WorkPresenterImpl.AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
-        
-        val sMusic = PreferenceSettings.getPreferences(WorkPresenterImpl.AudioType.MUSIC, getPreferences())
-        val sRing = PreferenceSettings.getPreferences(WorkPresenterImpl.AudioType.RING, getPreferences())
+        val music = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
+        val sound = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
+
+        val sMusic = TilePreferenceSettings.getPreferences(AudioType.MUSIC, getPreferences())
+        val sRing = TilePreferenceSettings.getPreferences(AudioType.RING, getPreferences())
 
         Timber.d("isWorkMode - ${sMusic?.setMusicVolume} and ${sRing?.setMusicVolume}")
 
-        return (sMusic?.setMusicVolume ?: -1 == music.setMusicVolume) && (sRing?.setMusicVolume ?: -1 == sound.setMusicVolume)
+        return (sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)
     }
 
     private fun getPreferences(): SharedPreferences {

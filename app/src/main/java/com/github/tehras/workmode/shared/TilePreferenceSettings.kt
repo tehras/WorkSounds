@@ -1,35 +1,36 @@
 package com.github.tehras.workmode.shared
 
 import android.content.SharedPreferences
-import com.github.tehras.workmode.ui.work.WorkPresenterImpl
+import com.github.tehras.workmode.ui.models.AudioSettings
+import com.github.tehras.workmode.ui.models.AudioType
 import timber.log.Timber
 
-object PreferenceSettings {
+object TilePreferenceSettings {
     val KEY_SETTINGS_ENABLED = "key_settings_enabled"
     val KEY_RING_TYPE = "key_settings_ring_type"
     val KEY_MUSIC_TYPE = "key_settings_music_type"
     val KEY_LAST_STATE_MUSIC = "key_last_state_music"
     val KEY_LAST_STATE_RING = "key_last_state_ring"
 
-    fun saveLastState(music: WorkPresenterImpl.AudioSettings, ring: WorkPresenterImpl.AudioSettings, preferences: SharedPreferences) {
+    fun saveLastState(music: AudioSettings, ring: AudioSettings, preferences: SharedPreferences) {
         preferences.edit().putString(KEY_LAST_STATE_MUSIC, music.toJson()).apply()
         preferences.edit().putString(KEY_LAST_STATE_RING, ring.toJson()).apply()
     }
 
-    fun getLastStateRing(preferences: SharedPreferences): WorkPresenterImpl.AudioSettings? {
+    fun getLastStateRing(preferences: SharedPreferences): AudioSettings? {
         val response = preferences.getString(KEY_LAST_STATE_RING, "")
         if (response.isNullOrBlank())
             return null
 
-        return WorkPresenterImpl.AudioSettings.fromJson(response)
+        return AudioSettings.fromJson(response)
     }
 
-    fun getLastStateMusic(preferences: SharedPreferences): WorkPresenterImpl.AudioSettings? {
+    fun getLastStateMusic(preferences: SharedPreferences): AudioSettings? {
         val response = preferences.getString(KEY_LAST_STATE_MUSIC, "")
         if (response.isNullOrBlank())
             return null
 
-        return WorkPresenterImpl.AudioSettings.fromJson(response)
+        return AudioSettings.fromJson(response)
     }
 
     fun isSharedPreferencesEnabled(preferences: SharedPreferences): Boolean {
@@ -45,26 +46,26 @@ object PreferenceSettings {
         }
     }
 
-    fun saveToPreferences(audioSettings: WorkPresenterImpl.AudioSettings, soundType: WorkPresenterImpl.AudioType, preferences: SharedPreferences) {
+    fun saveToPreferences(audioSettings: AudioSettings, soundType: AudioType, preferences: SharedPreferences) {
         val preferenceKey = getPreferenceKey(soundType)
 
         preferences.edit().putString(preferenceKey, audioSettings.toJson()).apply()
     }
 
-    fun getPreferences(soundType: WorkPresenterImpl.AudioType, preferences: SharedPreferences): WorkPresenterImpl.AudioSettings? {
+    fun getPreferences(soundType: AudioType, preferences: SharedPreferences): AudioSettings? {
         val response = preferences.getString(getPreferenceKey(soundType), "")
         if (response.isNullOrBlank())
             return null
 
-        return WorkPresenterImpl.AudioSettings.fromJson(response)
+        return AudioSettings.fromJson(response)
     }
 
-    private fun getPreferenceKey(soundType: WorkPresenterImpl.AudioType): String {
+    private fun getPreferenceKey(soundType: AudioType): String {
         when (soundType) {
-            WorkPresenterImpl.AudioType.RING -> {
+            AudioType.RING -> {
                 return KEY_RING_TYPE
             }
-            WorkPresenterImpl.AudioType.MUSIC -> {
+            AudioType.MUSIC -> {
                 return KEY_MUSIC_TYPE
             }
         }

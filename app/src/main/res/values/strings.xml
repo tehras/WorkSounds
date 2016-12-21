@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Work Sound</string>
-    <string name="enable_work_tile_title_text">Enable Work Sound</string>
+    <string name="enable_work_tile_title_text">Enable Tile Work Controls</string>
     <string name="notification_tile_tile">Notification Tile</string>
     <string name="tile_settings">Tile Settings</string>
     <string name="work_tile_label">Work Sound</string>
@@ -12,4 +12,14 @@
     <string name="dnd_explanation">For this function to operate properly you must give it access to change the <b>Do Not Disturb</b> option.</string>
     <string name="enable">Enable</string>
     <string name="skip">Skip</string>
+    <string name="location_based">Location - Auto Locate</string>
+    <string name="set_up">Set Up</string>
+    <string name="location_based_message">Location based work mode uses Google Play Services to get the information when you are near your work. This app will not be requesting location services, and will not be using your phone\'s battery.</string>
+    <string name="title_activity_location">Map</string>
+    <string name="disable">Disable</string>
+    <string name="enable_location_work_controls">Enable Location Work Controls</string>
+    <string name="work_location">Work Location:</string>
+    <string name="change">Change</string>
+    <string name="disable_text">Disable</string>
+    <string name="enable_text">Enable</string>
 </resources>

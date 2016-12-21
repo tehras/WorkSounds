@@ -2,22 +2,89 @@ package com.github.tehras.workmode.ui.work
 
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
-import com.github.tehras.workmode.shared.PreferenceSettings
-import com.github.tehras.workmode.ui.base.AbstractPresenter
+import com.github.tehras.workmode.shared.LocationPreferenceSettings
+import com.github.tehras.workmode.shared.TilePreferenceSettings
 import com.github.tehras.workmode.ui.base.BaseActivity
 import com.github.tehras.workmode.ui.dndpopup.DnDDialogFragment
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+import com.github.tehras.workmode.ui.models.AudioSettings
+import com.github.tehras.workmode.ui.models.AudioType
+import com.github.tehras.workmode.ui.models.WorkPlace
+import com.google.android.gms.location.places.Place
+import com.google.android.gms.location.places.ui.PlacePicker
 import timber.log.Timber
 import javax.inject.Inject
 
-class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) : AbstractPresenter<WorkView>(), WorkPresenter {
+
+class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) : WorkFencePresenter(preferences), WorkPresenter {
+    override fun initializeFenceApi() {
+        super.initFenceApi()
+    }
+
+    /**
+     * Location Text
+     */
+    override fun getLocationText(): CharSequence? {
+        val location = LocationPreferenceSettings.getLocation(preferences)
+
+        if (location != null) {
+            return location.address
+        } else {
+            view?.showSetupLayout()
+        }
+
+        return ""
+    }
+
+    /**
+     * Disable Location
+     */
+    override fun disableLocation() {
+        LocationPreferenceSettings.deleteLocation(preferences)
+        view?.showSetupLayout()
+        view?.showDisabledLocation()
+    }
+
+    /**
+     * Save Location Place
+     */
+    override fun saveLocationPlace(selectedPlace: Place?) {
+        Timber.d("saveLocationPlace $selectedPlace")
+        selectedPlace?.let {
+            LocationPreferenceSettings.saveLocation(WorkPlace(it), preferences)
+        }
+    }
+
+    /**
+     * This will start the location Search Activity
+     */
+    override fun startLocationSearch() {
+        val builder = PlacePicker.IntentBuilder()
+
+        (view as WorkActivity).startActivityForResult(Intent(builder.build(view as BaseActivity)), PLACE_PICKER_REQUEST)
+    }
+
+    /**
+     * This method will determine what to populate on the location based settings
+     */
+    override fun retrieveLocationBasedSettings() {
+        val location = LocationPreferenceSettings.getLocation(preferences)
+
+        Timber.d("Location is ${location?.toJson()}")
+        if (location != null) {
+            view?.showLocationEnabledLayout()
+        } else {
+            view?.showSetupLayout()
+        }
+    }
 
     companion object {
+        val PLACE_PICKER_REQUEST = 1
+
         private var showedDndDialog = false
     }
 
@@ -37,11 +104,11 @@ class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) 
     }
 
     override fun updateRingSettings(current: Int, max: Int) {
-        PreferenceSettings.saveToPreferences(AudioSettings(max, current), AudioType.RING, preferences)
+        TilePreferenceSettings.saveToPreferences(AudioSettings(max, current), AudioType.RING, preferences)
     }
 
     override fun updateMusicSettings(current: Int, max: Int) {
-        PreferenceSettings.saveToPreferences(AudioSettings(max, current), AudioType.MUSIC, preferences)
+        TilePreferenceSettings.saveToPreferences(AudioSettings(max, current), AudioType.MUSIC, preferences)
     }
 
     override fun checkForDnDOptions(activity: BaseActivity) {
@@ -66,19 +133,17 @@ class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) 
             //This api is only for 7.0+
             view?.hideTileCard()
         } else {
-            val isSharedPreferencesEnabled = PreferenceSettings.isSharedPreferencesEnabled(preferences)
+            val isSharedPreferencesEnabled = TilePreferenceSettings.isSharedPreferencesEnabled(preferences)
             view?.workTileStatus(isSharedPreferencesEnabled)
         }
     }
 
     override fun enableWorkTile(enable: Boolean) {
-        PreferenceSettings.setSharedPreferencesEnabled(enable, preferences)
+        TilePreferenceSettings.setSharedPreferencesEnabled(enable, preferences)
     }
 
     override fun retrieveSoundSettings() {
-        Timber.d("retrieveSoundSettings - view $view")
         view?.let {
-            Timber.d("retrieveSoundSettings - view $view")
             if (view is BaseActivity) {
                 Timber.d("retrieveSoundSettings - music and ring")
                 retrieveMusicControls(view as BaseActivity)
@@ -108,7 +173,7 @@ class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) 
     private fun retrieveControls(music: AudioType, activity: BaseActivity): AudioSettings {
         val maxMusicVolume: Int
         val currMusicVolume: Int
-        val musicControls = PreferenceSettings.getPreferences(music, preferences)
+        val musicControls = TilePreferenceSettings.getPreferences(music, preferences)
 
         if (musicControls != null) {
             return musicControls
@@ -129,44 +194,4 @@ class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) 
         }
     }
 
-
-    class AudioSettings(@SerializedName("maxMusicVolume") var maxMusicVolume: Int,
-                        @SerializedName("setMusicVolume") var setMusicVolume: Int) {
-
-        fun toJson(): String {
-            return Gson().toJson(this)
-        }
-
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other?.javaClass != javaClass) return false
-
-            other as AudioSettings
-
-            if (maxMusicVolume != other.maxMusicVolume) return false
-            if (setMusicVolume != other.setMusicVolume) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = maxMusicVolume
-            result = 31 * result + setMusicVolume
-            return result
-        }
-
-        override fun toString(): String {
-            return "AudioSettings(maxMusicVolume=$maxMusicVolume, setMusicVolume=$setMusicVolume)"
-        }
-
-        companion object {
-            fun fromJson(string: String): AudioSettings {
-                return Gson().fromJson(string, AudioSettings::class.java)
-            }
-        }
-
-
-    }
-
-    enum class AudioType { RING, MUSIC }
 }
