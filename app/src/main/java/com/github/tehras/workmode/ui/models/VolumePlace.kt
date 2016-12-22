@@ -5,10 +5,10 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
 
-class WorkPlace(place: Place) {
+class VolumePlace(place: Place) {
 
     @SerializedName("location")
-    var location: WorkLocation? = null
+    var location: VolumeLocation? = null
     @SerializedName("address")
     var address: String = ""
 
@@ -17,17 +17,17 @@ class WorkPlace(place: Place) {
     }
 
     override fun toString(): String {
-        return "WorkPlace(location=$location, address=$address)"
+        return "VolumePlace(location=$location, address=$address)"
     }
 
     companion object {
-        fun fromJson(response: String): WorkPlace {
-            return Gson().fromJson(response, WorkPlace::class.java)
+        fun fromJson(response: String): VolumePlace {
+            return Gson().fromJson(response, VolumePlace::class.java)
         }
     }
 
     init {
-        location = WorkLocation(place.latLng)
+        location = VolumeLocation(place.latLng)
         address = place.address.toString()
     }
 

@@ -3,7 +3,7 @@ package com.github.tehras.workmode.ui.models
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.SerializedName
 
-class WorkLocation {
+class VolumeLocation {
 
     constructor(location: LatLng) {
         latitude = location.latitude

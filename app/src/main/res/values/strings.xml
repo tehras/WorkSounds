@@ -22,4 +22,8 @@
     <string name="change">Change</string>
     <string name="disable_text">Disable</string>
     <string name="enable_text">Enable</string>
+    <string name="title_activity_volume">VolumeActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="volume_setting_groups">Volume Setting Groups</string>
+    <string name="below_is_the_list_off_existing_settings_you_have_setup">Below is the list off existing settings you have setup.</string>
 </resources>

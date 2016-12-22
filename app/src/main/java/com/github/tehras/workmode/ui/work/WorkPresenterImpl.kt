@@ -13,7 +13,7 @@ import com.github.tehras.workmode.ui.base.BaseActivity
 import com.github.tehras.workmode.ui.dndpopup.DnDDialogFragment
 import com.github.tehras.workmode.ui.models.AudioSettings
 import com.github.tehras.workmode.ui.models.AudioType
-import com.github.tehras.workmode.ui.models.WorkPlace
+import com.github.tehras.workmode.ui.models.VolumePlace
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlacePicker
 import timber.log.Timber
@@ -55,7 +55,7 @@ class WorkPresenterImpl @Inject constructor(var preferences: SharedPreferences) 
     override fun saveLocationPlace(selectedPlace: Place?) {
         Timber.d("saveLocationPlace $selectedPlace")
         selectedPlace?.let {
-            LocationPreferenceSettings.saveLocation(WorkPlace(it), preferences)
+            LocationPreferenceSettings.saveLocation(VolumePlace(it), preferences)
         }
     }
 

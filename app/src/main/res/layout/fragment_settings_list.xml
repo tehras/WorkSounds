@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/large_vertical_margin"
+            android:layout_marginEnd="@dimen/large_horizontal_margin"
+            android:layout_marginStart="@dimen/large_horizontal_margin"
+            android:layout_marginTop="@dimen/large_vertical_margin"
+            android:background="@drawable/background_gradient">
+
+            <TextView
+                style="@style/ScreenTextTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/volume_setting_groups" />
+
+            <TextView
+                style="@style/ScreenTextTop.Helper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/vertical_margin"
+                android:text="@string/below_is_the_list_off_existing_settings_you_have_setup" />
+
+        </LinearLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_setting_list_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</android.support.design.widget.CoordinatorLayout>
