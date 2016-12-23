@@ -11,9 +11,9 @@ import com.github.tehras.workmode.shared.LocationPreferenceSettings
 import com.github.tehras.workmode.shared.TilePreferenceSettings
 import com.github.tehras.workmode.ui.base.BaseActivity
 import com.github.tehras.workmode.ui.dndpopup.DnDDialogFragment
-import com.github.tehras.workmode.ui.models.AudioSettings
-import com.github.tehras.workmode.ui.models.AudioType
-import com.github.tehras.workmode.ui.models.VolumePlace
+import com.github.tehras.workmode.models.AudioSettings
+import com.github.tehras.workmode.models.AudioType
+import com.github.tehras.workmode.models.VolumePlace
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlacePicker
 import timber.log.Timber

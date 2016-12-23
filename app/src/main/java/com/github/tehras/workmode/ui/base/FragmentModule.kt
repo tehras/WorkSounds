@@ -1,5 +1,6 @@
 package com.github.tehras.workmode.ui.base
 
+import android.content.Context
 import com.github.tehras.workmode.ui.FragmentScope
 import dagger.Module
 import dagger.Provides
@@ -8,6 +9,9 @@ import dagger.Provides
 abstract class FragmentModule(private val fragment: BaseFragment) {
 
     @Provides @FragmentScope
-    fun provideActivity(): BaseFragment = fragment
+    fun provideFragment(): BaseFragment = fragment
+
+    @Provides @FragmentScope
+    fun provideContext(): Context = fragment.activity.applicationContext
 
 }

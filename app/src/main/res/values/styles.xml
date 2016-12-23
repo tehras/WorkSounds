@@ -58,7 +58,29 @@
 
     <style name="ScreenTextTop.Helper">
         <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">normal</item>>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="ListTextHeader">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ListTextButton">
+        <item name="android:layout_marginTop">@dimen/vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/vertical_margin</item>
+        <item name="android:layout_marginStart">@dimen/horizontal_margin</item>
+        <item name="android:layout_marginEnd">@dimen/horizontal_margin</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/holo_blue_dark</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="ListTextButton.Error">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/holo_red_dark</item>
+        <item name="android:textStyle">normal</item>
     </style>
 
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="VolumeProgressLayout">
+        <attr name="volume_image" format="enum">
+            <enum name="ring" value="0" />
+            <enum name="media" value="1" />
+        </attr>
+        <attr name="volume_enabled" format="boolean" />
+    </declare-styleable>
+</resources>

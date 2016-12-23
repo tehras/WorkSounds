@@ -1,4 +1,4 @@
-package com.github.tehras.workmode.ui.models
+package com.github.tehras.workmode.models
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName

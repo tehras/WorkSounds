@@ -23,6 +23,6 @@ class SplashScreen : AppCompatActivity() {
 
     private fun hasNotSelectedVolumeSettings(): Boolean {
         //todo add logic
-        return false
+        return true
     }
 }

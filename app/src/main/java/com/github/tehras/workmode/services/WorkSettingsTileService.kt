@@ -12,8 +12,8 @@ import android.service.quicksettings.TileService
 import android.widget.Toast
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.shared.TilePreferenceSettings
-import com.github.tehras.workmode.ui.models.AudioSettings
-import com.github.tehras.workmode.ui.models.AudioType
+import com.github.tehras.workmode.models.AudioSettings
+import com.github.tehras.workmode.models.AudioType
 import timber.log.Timber
 
 

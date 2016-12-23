@@ -11,7 +11,6 @@ import dagger.Provides
 @Module
 class VolumeFragmentModule(var fragment: BaseFragment) : FragmentModule(fragment = fragment) {
 
-
     @Provides @FragmentScope
     fun providePresenter(presenter: VolumeSettingsListPresenterImpl): VolumeSettingsListPresenter = presenter
 
