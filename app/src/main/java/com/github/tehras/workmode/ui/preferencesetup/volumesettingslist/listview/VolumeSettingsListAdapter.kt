@@ -10,32 +10,37 @@ import timber.log.Timber
 import java.util.*
 
 class VolumeSettingsListAdapter(var volumeSettings: ArrayList<VolumeSettingGroup>?,
+                                var addFunc: () -> Unit,
                                 var editFunc: (group: VolumeSettingGroup) -> Unit,
                                 var deleteFunc: (group: VolumeSettingGroup) -> Unit) : RecyclerView.Adapter<AbstractViewHolder<VolumeSettingGroup>>() {
 
     private val VIEW_TYPE_DEFAULT_HOLD: Int = 0
-    private val VIEW_TYPE_EMPTY_ERROR: Int = 1
+    private val VIEW_TYPE_EMPTY: Int = 1
 
-    fun update(volumeSettings: ArrayList<VolumeSettingGroup>?) {
+    fun update(volumeSettings: ArrayList<VolumeSettingGroup>?, addFunc: () -> Unit, editFunc: (group: VolumeSettingGroup) -> Unit, deleteFunc: (VolumeSettingGroup) -> Unit) {
+        Timber.d("obtainAdapter")
+
+        this.addFunc = addFunc
         this.volumeSettings = volumeSettings
+        this.editFunc = editFunc
+        this.deleteFunc = deleteFunc
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<VolumeSettingGroup>?, position: Int) {
-        holder?.bindView(volumeSettings?.get(position))
+        holder?.bindView(if (volumeSettings?.size ?: 0 > position) volumeSettings?.get(position) else null)
     }
 
     override fun getItemCount(): Int {
-        Timber.d("itemCount - ${volumeSettings?.size}")
-        return volumeSettings?.size ?: 1 // The one is for the "Add message"
+        return (volumeSettings?.size ?: 0) + 1// The one is for the "Add message"
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (volumeSettings?.size ?: 0 > 0) VIEW_TYPE_DEFAULT_HOLD else VIEW_TYPE_EMPTY_ERROR
+        return if ((position + 1) != itemCount) VIEW_TYPE_DEFAULT_HOLD else VIEW_TYPE_EMPTY
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AbstractViewHolder<VolumeSettingGroup> {
         when (viewType) {
-            VIEW_TYPE_EMPTY_ERROR -> return VolumeSettingsEmptyViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_empty))
+            VIEW_TYPE_EMPTY -> return VolumeSettingsEmptyViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_empty), addFunc)
             else -> return VolumeSettingsViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_item), editFunc, deleteFunc)
         }
     }

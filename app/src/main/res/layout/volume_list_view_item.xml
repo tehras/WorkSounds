@@ -2,14 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/ElevatedLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/vertical_margin"
-    android:layout_marginEnd="@dimen/horizontal_margin"
-    android:layout_marginStart="@dimen/horizontal_margin"
-    android:layout_marginTop="@dimen/vertical_margin"
-    android:background="@android:color/white"
-    android:elevation="@dimen/cardview_default_elevation"
     android:orientation="vertical">
 
     <LinearLayout
@@ -86,6 +81,7 @@
             style="@style/ListTextButton.Error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/selectable_background"
             android:text="@string/delete" />
 
         <TextView
@@ -93,6 +89,7 @@
             style="@style/ListTextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/selectable_background"
             android:text="@string/edit" />
 
     </LinearLayout>

@@ -16,6 +16,9 @@ import javax.inject.Inject
 class VolumeSettingsListPresenterImpl @Inject constructor() : AbstractPresenter<VolumeSettingsListView>(), VolumeSettingsListPresenter {
 
     private var adapter: VolumeSettingsListAdapter? = null
+    private val editFunc: (group: VolumeSettingGroup) -> Unit = { view?.edit(it) }
+    private val deleteFunc: (group: VolumeSettingGroup) -> Unit = { view?.delete(it) }
+    private val addFunc: () -> Unit = { view?.add() }
 
     /**
      * Returns List View Adapter
@@ -25,9 +28,9 @@ class VolumeSettingsListPresenterImpl @Inject constructor() : AbstractPresenter<
         val setting = volumeSettings()
 
         if (adapter == null)
-            adapter = VolumeSettingsListAdapter(setting, { view?.edit(it) }, {view?.delete(it)})
+            adapter = VolumeSettingsListAdapter(setting, addFunc, editFunc, deleteFunc)
         else
-            adapter?.update(setting)
+            adapter?.update(setting, addFunc, editFunc, deleteFunc)
         return adapter
     }
 

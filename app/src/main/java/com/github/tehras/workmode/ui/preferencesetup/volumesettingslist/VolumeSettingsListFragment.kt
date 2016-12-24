@@ -14,6 +14,13 @@ import com.github.tehras.workmode.ui.preferencesetup.fragmentcommon.VolumeFragme
 import kotlinx.android.synthetic.main.fragment_settings_list.*
 
 open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView, VolumeSettingsListPresenter>(), VolumeSettingsListView {
+    override fun add() {
+        //TODO implement
+        view?.let {
+            Snackbar.make(it, "TODO implement ADD", Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
     override fun edit(group: VolumeSettingGroup) {
         //TODO implement
         view?.let {

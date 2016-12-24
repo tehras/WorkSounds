@@ -20,8 +20,8 @@ class VolumeSettingsViewHolder(var view: View?, var editFunc: (group: VolumeSett
         (view?.findViewById(R.id.volume_image) as ImageView).setColorFilter(view?.resources?.getColor(R.color.colorPrimary) ?: Color.BLACK, PorterDuff.Mode.SRC_ATOP)
 
         t?.let {
-            (view?.findViewById(R.id.volume_edit) as TextView).setOnClickListener { editFunc(t) }
-            (view?.findViewById(R.id.volume_delete) as TextView).setOnClickListener { deleteFunc(t) }
+            (view?.findViewById(R.id.volume_edit) as View).setOnClickListener { editFunc(t) }
+            (view?.findViewById(R.id.volume_delete) as View).setOnClickListener { deleteFunc(t) }
         }
     }
 

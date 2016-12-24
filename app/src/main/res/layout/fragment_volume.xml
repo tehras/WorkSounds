@@ -4,8 +4,7 @@
     android:id="@+id/content_volume"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment"
-    tools:showIn="@layout/activity_volume">
+    tools:context="com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment">
 
 
 </android.support.constraint.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.support.v4.app.LoaderManager
 import android.support.v4.content.Loader
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -13,6 +14,10 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
     private val LOADER_ID = 1
     protected lateinit var presenter: T
     protected var firstLoad: Boolean = true
+
+    // We call to bind presenter from onActivityCreated and onStart
+    // This flag will ensure only one is used
+    protected var viewIsBind: Boolean = false
 
     // Boolean flag to avoid delivering the Presenter twice. Calling initLoader in onActivityCreated means
     // onLoadFinished will be called twice during configuration change.
@@ -33,7 +38,14 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
      */
     @CallSuper
     protected open fun onPresenterReady() {
-        bindPresenter()
+        if (!viewIsBind)
+            bindPresenter()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        onPresenterReady()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -59,7 +71,9 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
     @CallSuper
     override fun onStop() {
         super.onStop()
+        Timber.d("unbindView")
         presenter.unbindView()
+        viewIsBind = false
     }
 
     protected fun getViewLayer(): V {
@@ -76,8 +90,10 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
     }
 
     private fun bindPresenter() {
+        Timber.d("bindPresenter")
         presenter.bindView(getViewLayer())
         firstLoad = false
+        viewIsBind = true
     }
 
     override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<T> {

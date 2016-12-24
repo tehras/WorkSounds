@@ -68,19 +68,26 @@
     </style>
 
     <style name="ListTextButton">
-        <item name="android:layout_marginTop">@dimen/vertical_margin</item>
-        <item name="android:layout_marginBottom">@dimen/vertical_margin</item>
-        <item name="android:layout_marginStart">@dimen/horizontal_margin</item>
-        <item name="android:layout_marginEnd">@dimen/horizontal_margin</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:paddingStart">@dimen/horizontal_margin</item>
+        <item name="android:paddingEnd">@dimen/horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/vertical_margin</item>
+        <item name="android:paddingBottom">@dimen/vertical_margin</item>
         <item name="android:textColor">@android:color/holo_blue_dark</item>
         <item name="android:textStyle">normal</item>
     </style>
 
     <style name="ListTextButton.Error">
-        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@android:color/holo_red_dark</item>
         <item name="android:textStyle">normal</item>
+    </style>
+
+    <style name="ElevatedLayout">
+        <item name="android:layout_marginBottom">@dimen/vertical_margin</item>
+        <item name="android:layout_marginTop">@dimen/vertical_margin</item>
+        <item name="android:layout_marginEnd">@dimen/horizontal_margin</item>
+        <item name="android:layout_marginStart">@dimen/horizontal_margin</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:elevation">@dimen/medium_elevation</item>
     </style>
 
 </resources>

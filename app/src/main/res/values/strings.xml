@@ -30,4 +30,6 @@
     <string name="volume_image">volume image</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+    <string name="add_button">add button</string>
+    <string name="add_a_new_group">Add a new volume setting</string>
 </resources>
