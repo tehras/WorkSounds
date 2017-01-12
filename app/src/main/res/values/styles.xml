@@ -90,4 +90,9 @@
         <item name="android:elevation">@dimen/medium_elevation</item>
     </style>
 
+    <style name="EditPageTitle">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

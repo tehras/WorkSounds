@@ -28,5 +28,5 @@ interface AppComponent {
     fun plus(workModule: WorkModule): WorkComponent
 
     fun plus(fragmentModule: VolumeFragmentModule): VolumeFragmentComponent
-    fun plus(workModule: VolumeModule): VolumeComponent
+    fun plus(volumeModule: VolumeModule): VolumeComponent
 }

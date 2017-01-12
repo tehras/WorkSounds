@@ -1,11 +1,13 @@
 package com.github.tehras.workmode.ui.preferencesetup
 
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.extensions.startFragment
+import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.PresenterActivity
+import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
+import kotlinx.android.synthetic.main.activity_volume.*
 
 class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeView {
     override fun injectDependencies(graph: AppComponent) {
@@ -17,17 +19,8 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
         setContentView(R.layout.activity_volume)
     }
 
-    override fun onStart() {
-        super.onStart()
-
-
-        val fab = findViewById(R.id.fab) as FloatingActionButton
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-
-            //todo add group
-        }
+    fun showNewVolumeFragment(volumeGroup: VolumeSettingGroup?) {
+        VolumeNewSettingsFragment.instance(volumeGroup).startFragment(this, new_scene_view_container, true)
     }
 
 }

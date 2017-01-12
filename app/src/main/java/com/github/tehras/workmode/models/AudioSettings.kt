@@ -2,9 +2,10 @@ package com.github.tehras.workmode.models
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
-class AudioSettings(@SerializedName("maxMusicVolume") var maxMusicVolume: Int,
-                    @SerializedName("setMusicVolume") var setMusicVolume: Int) {
+data class AudioSettings(@SerializedName("maxMusicVolume") var maxMusicVolume: Int,
+                         @SerializedName("setMusicVolume") var setMusicVolume: Int) : Serializable {
 
     fun toJson(): String {
         return Gson().toJson(this)

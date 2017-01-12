@@ -9,7 +9,7 @@ import dagger.Subcomponent
 @Subcomponent(modules = arrayOf(VolumeFragmentModule::class))
 interface VolumeFragmentComponent {
 
-    fun injectTo(fragment: VolumeNewSettingsFragment)
     fun injectTo(fragment: VolumeSettingsListFragment)
+    fun injectTo(fragment: VolumeNewSettingsFragment)
 
 }

@@ -10,15 +10,15 @@ import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.defaultInit
 import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.PresenterFragment
+import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
 import com.github.tehras.workmode.ui.preferencesetup.fragmentcommon.VolumeFragmentModule
 import kotlinx.android.synthetic.main.fragment_settings_list.*
 
 open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView, VolumeSettingsListPresenter>(), VolumeSettingsListView {
     override fun add() {
-        //TODO implement
-        view?.let {
-            Snackbar.make(it, "TODO implement ADD", Snackbar.LENGTH_SHORT).show()
-        }
+        //start New Volume Settings Fragment
+        if (activity is VolumeActivity)
+            (activity as VolumeActivity).showNewVolumeFragment(null)
     }
 
     override fun edit(group: VolumeSettingGroup) {
