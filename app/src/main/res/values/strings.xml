@@ -39,4 +39,7 @@
     <string name="do_nothing">Do Nothing (Keep at the scene\'s level)</string>
     <string name="set_custom_level">Set Custom Level</string>
     <string name="help_text_set_into_scene">Set volume settings below to what you\'d like when waking into a scene</string>
+    <string name="tile_image">Tile Image</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
 </resources>

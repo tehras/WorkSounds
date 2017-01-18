@@ -1,7 +1,7 @@
 package com.github.tehras.workmode.shared
 
 import android.content.SharedPreferences
-import com.github.tehras.workmode.models.VolumePlace
+import com.github.tehras.workmode.models.scene.VolumePlace
 import timber.log.Timber
 
 object LocationPreferenceSettings {

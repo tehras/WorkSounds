@@ -3,6 +3,7 @@ package com.github.tehras.workmode.ui.preferencesetup
 import android.os.Bundle
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.extensions.getLastFragmentInStack
 import com.github.tehras.workmode.extensions.startFragment
 import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.PresenterActivity
@@ -17,6 +18,17 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_volume)
+    }
+
+    fun onBackPressedIgnoreOverride() {
+        super.onBackPressed()
+    }
+
+    override fun onBackPressed() {
+        val fragment = this.getLastFragmentInStack()
+        if (fragment !is VolumeNewSettingsFragment || fragment.alreadyShowedCancelMessage()) {
+            super.onBackPressed()
+        }
     }
 
     fun showNewVolumeFragment(volumeGroup: VolumeSettingGroup?) {

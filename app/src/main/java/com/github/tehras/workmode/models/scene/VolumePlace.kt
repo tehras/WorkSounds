@@ -1,4 +1,4 @@
-package com.github.tehras.workmode.models
+package com.github.tehras.workmode.models.scene
 
 import com.google.android.gms.location.places.Place
 import com.google.gson.Gson

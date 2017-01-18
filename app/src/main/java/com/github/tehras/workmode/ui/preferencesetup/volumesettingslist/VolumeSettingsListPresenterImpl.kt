@@ -2,8 +2,8 @@ package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist
 
 import android.support.v7.widget.RecyclerView
 import com.github.tehras.workmode.R
-import com.github.tehras.workmode.models.AudioSettings
-import com.github.tehras.workmode.models.VolumeLocation
+import com.github.tehras.workmode.models.scene.AudioSettings
+import com.github.tehras.workmode.models.scene.VolumeLocation
 import com.github.tehras.workmode.models.settings.VolumeLocations
 import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.AbstractPresenter

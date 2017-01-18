@@ -38,7 +38,7 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<VolumeSettingGroup
         return if ((position + 1) != itemCount) VIEW_TYPE_DEFAULT_HOLD else VIEW_TYPE_EMPTY
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AbstractViewHolder<VolumeSettingGroup> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<VolumeSettingGroup> {
         when (viewType) {
             VIEW_TYPE_EMPTY -> return VolumeSettingsEmptyViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_empty), addFunc)
             else -> return VolumeSettingsViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_item), editFunc, deleteFunc)

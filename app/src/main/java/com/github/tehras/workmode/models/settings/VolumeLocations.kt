@@ -1,6 +1,6 @@
 package com.github.tehras.workmode.models.settings
 
-import com.github.tehras.workmode.models.VolumeLocation
+import com.github.tehras.workmode.models.scene.VolumeLocation
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.util.*

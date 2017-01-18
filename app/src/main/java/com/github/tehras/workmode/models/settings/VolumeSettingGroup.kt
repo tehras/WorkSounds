@@ -1,7 +1,7 @@
 package com.github.tehras.workmode.models.settings
 
 import android.support.annotation.IntegerRes
-import com.github.tehras.workmode.models.AudioSettings
+import com.github.tehras.workmode.models.scene.AudioSettings
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 

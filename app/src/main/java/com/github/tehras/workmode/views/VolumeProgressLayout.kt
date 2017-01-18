@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.SeekBar
 import com.github.tehras.workmode.R
 import kotlinx.android.synthetic.main.view_volume_progress_bar.view.*
 
@@ -13,7 +14,6 @@ class VolumeProgressLayout(context: Context?, attrs: AttributeSet?, defStyleAttr
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?) : this(context, null)
-
 
     private val RING = 0
     private val MEDIA = 1
@@ -50,6 +50,24 @@ class VolumeProgressLayout(context: Context?, attrs: AttributeSet?, defStyleAttr
         updateIcon(vol == 0)
         view_volume_seek_bar.progress = vol
         view_volume_seek_bar.max = maxVol
+    }
+
+    /**
+     * @param func -> the first int is the current progress, the second is the max
+     */
+    fun onProgressChangeListener(func: (Int, Int) -> Unit) {
+        view_volume_seek_bar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                func(progress, seekBar?.max ?: 10)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+        })
     }
 
     /**

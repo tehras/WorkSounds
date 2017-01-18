@@ -1,8 +1,8 @@
 package com.github.tehras.workmode.shared
 
 import android.content.SharedPreferences
-import com.github.tehras.workmode.models.AudioSettings
-import com.github.tehras.workmode.models.AudioType
+import com.github.tehras.workmode.models.scene.AudioSettings
+import com.github.tehras.workmode.models.scene.AudioType
 import timber.log.Timber
 
 object TilePreferenceSettings {
