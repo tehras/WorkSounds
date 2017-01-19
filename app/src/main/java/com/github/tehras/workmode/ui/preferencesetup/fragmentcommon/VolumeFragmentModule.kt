@@ -1,5 +1,7 @@
 package com.github.tehras.workmode.ui.preferencesetup.fragmentcommon
 
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.github.tehras.workmode.ui.FragmentScope
 import com.github.tehras.workmode.ui.base.BaseFragment
 import com.github.tehras.workmode.ui.base.FragmentModule
@@ -19,4 +21,6 @@ class VolumeFragmentModule(fragment: BaseFragment) : FragmentModule(fragment = f
     @Provides @FragmentScope
     fun provideNewVolumePresenter(presenter: VolumeNewSettingsPresenterImpl): VolumeNewSettingsPresenter = presenter
 
+    @Provides @FragmentScope
+    fun provideSharedPreference(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(fragment.activity.applicationContext)
 }

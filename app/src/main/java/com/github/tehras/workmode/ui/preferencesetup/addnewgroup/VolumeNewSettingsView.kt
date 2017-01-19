@@ -5,4 +5,6 @@ import com.github.tehras.workmode.ui.base.MvpView
 interface VolumeNewSettingsView : MvpView {
     fun goBackWithoutSaving()
     fun showCancelDialog()
+    fun showTileNeedsToBeSelected()
+    fun notifySceneSubmitted()
 }

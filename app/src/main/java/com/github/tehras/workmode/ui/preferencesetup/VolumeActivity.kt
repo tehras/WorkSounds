@@ -9,6 +9,7 @@ import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.PresenterActivity
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
 import kotlinx.android.synthetic.main.activity_volume.*
+import timber.log.Timber
 
 class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeView {
     override fun injectDependencies(graph: AppComponent) {
@@ -26,8 +27,11 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
 
     override fun onBackPressed() {
         val fragment = this.getLastFragmentInStack()
+        Timber.d("fragment - $fragment")
         if (fragment !is VolumeNewSettingsFragment || fragment.alreadyShowedCancelMessage()) {
             super.onBackPressed()
+        } else if (!fragment.alreadyShowedCancelMessage()) {
+            fragment.showCancelDialog()
         }
     }
 

@@ -42,12 +42,6 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
             bindPresenter()
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        onPresenterReady()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 

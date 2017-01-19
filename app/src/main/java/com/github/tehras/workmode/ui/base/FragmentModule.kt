@@ -6,7 +6,7 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-abstract class FragmentModule(private val fragment: BaseFragment) {
+abstract class FragmentModule(protected val fragment: BaseFragment) {
 
     @Provides @FragmentScope
     fun provideFragment(): BaseFragment = fragment

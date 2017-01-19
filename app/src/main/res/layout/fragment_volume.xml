@@ -38,6 +38,7 @@
             style="@style/EditPageTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="@string/select_an_icon"
@@ -206,8 +207,8 @@
         android:id="@+id/volume_submit_button_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/large_elevation"
         android:layout_alignParentBottom="true"
+        android:elevation="@dimen/large_elevation"
         android:gravity="end">
 
         <android.support.v7.widget.AppCompatButton
@@ -217,12 +218,24 @@
             android:text="@string/cancel"
             android:textColor="@android:color/black"/>
 
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/create_button"
+        <FrameLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/create"
-            android:textColor="@color/colorPrimaryDark"/>
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/create_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create"
+                android:textColor="@color/colorPrimaryDark"/>
+
+            <com.github.tehras.workmode.views.SuccessLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                />
+
+        </FrameLayout>
 
     </LinearLayout>
 

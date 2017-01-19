@@ -1,30 +1,33 @@
 package com.github.tehras.workmode.ui.preferencesetup.addnewgroup
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
-import com.github.tehras.workmode.R.id.image_selector_list_view
 import com.github.tehras.workmode.extensions.addToBundle
+import com.github.tehras.workmode.extensions.getColorDefault
 import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.PresenterFragment
 import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
 import com.github.tehras.workmode.ui.preferencesetup.fragmentcommon.VolumeFragmentModule
 import kotlinx.android.synthetic.main.fragment_volume.*
+import timber.log.Timber
 
 /**
  * A placeholder fragment containing a simple view.
  */
 class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, VolumeNewSettingsPresenter>(), VolumeNewSettingsView {
+
     var showedAlertMessage: Boolean = false
 
     override fun showCancelDialog() {
         showedAlertMessage = true
         AlertDialog.Builder(this.context)
-                .setMessage("Are you sure you want to cancel this scene, this will lose you all teh current progress?")
+                .setMessage("Are you sure you want to cancel this scene, all progress will be lost?")
                 .setPositiveButton("Yes") { dialogInterface, i ->
                     dialogInterface.dismiss()
                     goBackWithoutSaving()
@@ -37,6 +40,7 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
     }
 
     fun alreadyShowedCancelMessage(): Boolean {
+        Timber.d("already showed cancel message -> $showedAlertMessage")
         return showedAlertMessage
     }
 
@@ -75,6 +79,18 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         presenter.setUpInVolumeControls(linearLayout)
         presenter.setUpOutVolumeControls(out_ring_volume_container)
         presenter.setUpButtonBar(cancel_button, create_button)
+    }
+
+    override fun showTileNeedsToBeSelected() {
+        view?.let {
+            Snackbar.make(it, "Please select a tile", Snackbar.LENGTH_SHORT).show()
+
+            icon_title.setTextColor(it.context.getColorDefault(R.color.errorRed))
+        }
+    }
+
+    override fun notifySceneSubmitted() {
+
     }
 
 }

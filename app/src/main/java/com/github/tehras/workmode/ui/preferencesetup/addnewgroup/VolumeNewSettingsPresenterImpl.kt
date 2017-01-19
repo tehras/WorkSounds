@@ -1,7 +1,7 @@
 package com.github.tehras.workmode.ui.preferencesetup.addnewgroup
 
 import android.annotation.SuppressLint
-import android.support.v7.app.AlertDialog
+import android.content.SharedPreferences
 import android.support.v7.widget.AppCompatButton
 import android.support.v7.widget.AppCompatRadioButton
 import android.support.v7.widget.LinearLayoutManager
@@ -14,6 +14,8 @@ import com.github.tehras.workmode.extensions.setButtonColor
 import com.github.tehras.workmode.models.scene.AudioSetVolumePreference
 import com.github.tehras.workmode.models.scene.AudioSettings
 import com.github.tehras.workmode.models.scene.ScenePreference
+import com.github.tehras.workmode.models.scene.TileImage
+import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.adapter.ImagePickerAdapter
 import com.github.tehras.workmode.views.VolumeProgressLayout
@@ -21,7 +23,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @SuppressLint("PrivateResource")
-class VolumeNewSettingsPresenterImpl @Inject constructor() : AbstractPresenter<VolumeNewSettingsView>(), VolumeNewSettingsPresenter {
+class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: SharedPreferences) : AbstractPresenter<VolumeNewSettingsView>(), VolumeNewSettingsPresenter {
 
     //If edit i'll have to add some logic here
     var scenePreference: ScenePreference = ScenePreference()
@@ -129,7 +131,23 @@ class VolumeNewSettingsPresenterImpl @Inject constructor() : AbstractPresenter<V
         createButton?.setButtonColor(android.R.color.white)
 
         cancelButton?.setOnClickListener {
-           view?.showCancelDialog()
+            view?.showCancelDialog()
         }
+        createButton?.setOnClickListener {
+            validateAndSubmitScene()
+        }
+    }
+
+    private fun validateAndSubmitScene() {
+        //validate scene preference
+        if (scenePreference.selectedTile == TileImage.NONE) {
+            view?.showTileNeedsToBeSelected()
+        }
+
+        //save the request
+        ScenePreferenceSettings.saveScene(scenePreference, preferences)
+
+        //notify view everything went through fine
+        view?.notifySceneSubmitted()
     }
 }
