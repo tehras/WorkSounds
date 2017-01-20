@@ -43,4 +43,8 @@
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="checkmark">checkmark</string>
+    <string name="scene_location">Scene Location</string>
+    <string name="select_a_location">Select a Location at which this Scene will activate:</string>
+    <string name="location">Location</string>
+    <string name="current_location">Location Currently Set To:</string>
 </resources>
