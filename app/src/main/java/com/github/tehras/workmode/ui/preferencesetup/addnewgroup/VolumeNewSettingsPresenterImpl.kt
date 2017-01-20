@@ -8,8 +8,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.widget.EditText
 import android.widget.LinearLayout
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.extensions.addSimpleTextChangeListener
 import com.github.tehras.workmode.extensions.setButtonColor
 import com.github.tehras.workmode.models.scene.AudioSetVolumePreference
 import com.github.tehras.workmode.models.scene.AudioSettings
@@ -27,6 +29,13 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
 
     //If edit i'll have to add some logic here
     var scenePreference: ScenePreference = ScenePreference()
+
+    override fun setUpName(nameField: EditText?) {
+        nameField?.addSimpleTextChangeListener {
+            scenePreference.name = it
+            view?.showNameNeedsToBeSelected(false)
+        }
+    }
 
     override fun setUpInVolumeControls(linearLayout: LinearLayout?) {
         //ring volume setup
@@ -123,7 +132,10 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
     override fun setUpHorizontalImagePicker(imageSelectorView: RecyclerView) {
         imageSelectorView.layoutManager = LinearLayoutManager(imageSelectorView.context, LinearLayoutManager.HORIZONTAL, false)
         imageSelectorView.setHasFixedSize(true)
-        imageSelectorView.adapter = ImagePickerAdapter(scenePreference.selectedTile) { scenePreference.selectedTile = it }
+        imageSelectorView.adapter = ImagePickerAdapter(scenePreference.selectedTile) {
+            scenePreference.selectedTile = it
+            view?.showTileNeedsToBeSelected(false)
+        }
     }
 
     override fun setUpButtonBar(cancelButton: AppCompatButton?, createButton: AppCompatButton?) {
@@ -141,13 +153,15 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
     private fun validateAndSubmitScene() {
         //validate scene preference
         if (scenePreference.selectedTile == TileImage.NONE) {
-            view?.showTileNeedsToBeSelected()
+            view?.showTileNeedsToBeSelected(true)
+        } else if (scenePreference.name.isNullOrEmpty()) {
+            view?.showNameNeedsToBeSelected(true)
+        } else {
+            //save the request
+            ScenePreferenceSettings.saveScene(scenePreference, preferences)
+
+            //notify view everything went through fine
+            view?.notifySceneSubmitted()
         }
-
-        //save the request
-        ScenePreferenceSettings.saveScene(scenePreference, preferences)
-
-        //notify view everything went through fine
-        view?.notifySceneSubmitted()
     }
 }

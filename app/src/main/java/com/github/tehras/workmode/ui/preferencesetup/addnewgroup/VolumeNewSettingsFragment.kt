@@ -79,18 +79,43 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         presenter.setUpInVolumeControls(linearLayout)
         presenter.setUpOutVolumeControls(out_ring_volume_container)
         presenter.setUpButtonBar(cancel_button, create_button)
+        presenter.setUpName(name_field)
     }
 
-    override fun showTileNeedsToBeSelected() {
+    override fun showTileNeedsToBeSelected(b: Boolean) {
         view?.let {
-            Snackbar.make(it, "Please select a tile", Snackbar.LENGTH_SHORT).show()
+            if (b) {
+                Snackbar.make(it, "Please select a tile", Snackbar.LENGTH_SHORT).show()
 
-            icon_title.setTextColor(it.context.getColorDefault(R.color.errorRed))
+                icon_title.setTextColor(it.context.getColorDefault(R.color.errorRed))
+            } else {
+                icon_title.setTextColor(it.context.getColorDefault(android.R.color.black))
+            }
+        }
+    }
+
+    override fun showNameNeedsToBeSelected(b: Boolean) {
+        view?.let {
+            if (b) {
+                Snackbar.make(it, "Please enter a name", Snackbar.LENGTH_SHORT).show()
+
+                name_title.setTextColor(it.context.getColorDefault(R.color.errorRed))
+            } else {
+                name_title.setTextColor(it.context.getColorDefault(android.R.color.black))
+            }
         }
     }
 
     override fun notifySceneSubmitted() {
-
+        create_button.visibility = View.INVISIBLE
+        success_layout.show {
+            //close fragment
+            if (activity is VolumeActivity) {
+                showedAlertMessage = true
+                activity.onBackPressed()
+                (activity as VolumeActivity).refreshScene()
+            }
+        }
     }
 
 }

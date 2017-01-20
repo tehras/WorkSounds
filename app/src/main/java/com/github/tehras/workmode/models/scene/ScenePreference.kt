@@ -1,12 +1,13 @@
 package com.github.tehras.workmode.models.scene
 
-import com.github.tehras.workmode.models.scene.AudioSettings
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 class ScenePreference : Serializable {
 
+    @SerializedName("name")
+    var name: String? = ""
     @SerializedName("inMediaVolume")
     var inMediaVolume: AudioSettings? = null
     @SerializedName("inRingVolume")
