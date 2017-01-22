@@ -4,20 +4,21 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.inflateLayoutFromParent
+import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.AbstractViewHolder
 import timber.log.Timber
 import java.util.*
 
-class VolumeSettingsListAdapter(var volumeSettings: ArrayList<VolumeSettingGroup>?,
+class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
                                 var addFunc: () -> Unit,
-                                var editFunc: (group: VolumeSettingGroup) -> Unit,
-                                var deleteFunc: (group: VolumeSettingGroup) -> Unit) : RecyclerView.Adapter<AbstractViewHolder<VolumeSettingGroup>>() {
+                                var editFunc: (group: ScenePreference) -> Unit,
+                                var deleteFunc: (group: ScenePreference) -> Unit) : RecyclerView.Adapter<AbstractViewHolder<ScenePreference>>() {
 
     private val VIEW_TYPE_DEFAULT_HOLD: Int = 0
     private val VIEW_TYPE_EMPTY: Int = 1
 
-    fun update(volumeSettings: ArrayList<VolumeSettingGroup>?, addFunc: () -> Unit, editFunc: (group: VolumeSettingGroup) -> Unit, deleteFunc: (VolumeSettingGroup) -> Unit) {
+    fun update(volumeSettings: ArrayList<ScenePreference>?, addFunc: () -> Unit, editFunc: (group: ScenePreference) -> Unit, deleteFunc: (ScenePreference) -> Unit) {
         Timber.d("obtainAdapter")
 
         this.addFunc = addFunc
@@ -26,7 +27,7 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<VolumeSettingGroup
         this.deleteFunc = deleteFunc
     }
 
-    override fun onBindViewHolder(holder: AbstractViewHolder<VolumeSettingGroup>?, position: Int) {
+    override fun onBindViewHolder(holder: AbstractViewHolder<ScenePreference>?, position: Int) {
         holder?.bindView(if (volumeSettings?.size ?: 0 > position) volumeSettings?.get(position) else null)
     }
 
@@ -38,7 +39,7 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<VolumeSettingGroup
         return if ((position + 1) != itemCount) VIEW_TYPE_DEFAULT_HOLD else VIEW_TYPE_EMPTY
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<VolumeSettingGroup> {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<ScenePreference> {
         when (viewType) {
             VIEW_TYPE_EMPTY -> return VolumeSettingsEmptyViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_empty), addFunc)
             else -> return VolumeSettingsViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_item), editFunc, deleteFunc)

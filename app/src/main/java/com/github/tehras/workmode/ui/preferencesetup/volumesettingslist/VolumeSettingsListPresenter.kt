@@ -5,4 +5,5 @@ import com.github.tehras.workmode.ui.base.Presenter
 
 interface VolumeSettingsListPresenter : Presenter<VolumeSettingsListView> {
     fun obtainAdapter(): RecyclerView.Adapter<*>?
+    fun refreshAdapter()
 }

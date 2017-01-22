@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.defaultInit
-import com.github.tehras.workmode.models.settings.VolumeSettingGroup
+import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterFragment
 import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
 import com.github.tehras.workmode.ui.preferencesetup.fragmentcommon.VolumeFragmentModule
@@ -21,14 +21,14 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
             (activity as VolumeActivity).showNewVolumeFragment(null)
     }
 
-    override fun edit(group: VolumeSettingGroup) {
+    override fun edit(group: ScenePreference) {
         //TODO implement
         view?.let {
             Snackbar.make(it, "TODO implement EDIT", Snackbar.LENGTH_SHORT).show()
         }
     }
 
-    override fun delete(group: VolumeSettingGroup) {
+    override fun delete(group: ScenePreference) {
         //TODO implement
         view?.let {
             Snackbar.make(it, "TODO implement DELETE", Snackbar.LENGTH_SHORT).show()
@@ -49,5 +49,9 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
         //start init
         fragment_setting_list_list_view.defaultInit()
         fragment_setting_list_list_view.adapter = presenter.obtainAdapter()
+    }
+
+    fun refreshListView() {
+        presenter.refreshAdapter()
     }
 }

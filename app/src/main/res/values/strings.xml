@@ -33,6 +33,7 @@
     <string name="add_button">add button</string>
     <string name="add_a_new_group">Add a new scene</string>
     <string name="select_an_icon">Select an Icon</string>
+    <string name="select_a_name">Select a Name</string>
     <string name="volume_preferences">Volume Preferences</string>
     <string name="after_leaving_scene_text">Set volume settings after leaving the scene</string>
     <string name="go_to_prev">Change back to Previous (Prior to entering scene)</string>

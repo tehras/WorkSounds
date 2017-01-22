@@ -8,6 +8,7 @@ import com.github.tehras.workmode.extensions.startFragment
 import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.PresenterActivity
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
+import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeSettingsListFragment
 import kotlinx.android.synthetic.main.activity_volume.*
 import timber.log.Timber
 
@@ -37,6 +38,13 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
 
     fun showNewVolumeFragment(volumeGroup: VolumeSettingGroup?) {
         VolumeNewSettingsFragment.instance(volumeGroup).startFragment(this, new_scene_view_container, true)
+    }
+
+    fun refreshScene() {
+        supportFragmentManager.fragments.forEach {
+            if (it is VolumeSettingsListFragment)
+                it.refreshListView()
+        }
     }
 
 }
