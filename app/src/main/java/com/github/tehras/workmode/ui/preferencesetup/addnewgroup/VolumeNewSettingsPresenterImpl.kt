@@ -13,14 +13,12 @@ import android.widget.LinearLayout
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.addSimpleTextChangeListener
 import com.github.tehras.workmode.extensions.setButtonColor
-import com.github.tehras.workmode.models.scene.AudioSetVolumePreference
-import com.github.tehras.workmode.models.scene.AudioSettings
-import com.github.tehras.workmode.models.scene.ScenePreference
-import com.github.tehras.workmode.models.scene.TileImage
+import com.github.tehras.workmode.models.scene.*
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.adapter.ImagePickerAdapter
 import com.github.tehras.workmode.views.VolumeProgressLayout
+import com.google.android.gms.location.places.Place
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -164,4 +162,18 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             view?.notifySceneSubmitted()
         }
     }
+
+    override fun setUpLocation(locationLayout: LinearLayout?) {
+        if (scenePreference.location?.address.isNullOrEmpty()) {
+            view?.showSelectLocation()
+        } else {
+            view?.showLocationExisted(scenePreference.location!!.address)
+        }
+    }
+
+    override fun saveLocation(place: Place) {
+        scenePreference.location = VolumePlace(place)
+        view?.showLocationExisted(scenePreference.location?.address)
+    }
+
 }

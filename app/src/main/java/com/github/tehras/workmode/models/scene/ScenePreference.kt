@@ -20,6 +20,9 @@ class ScenePreference : Serializable {
     @SerializedName("outRingVolume")
     var outRingVolume: AudioSettings? = null
 
+    @SerializedName("location")
+    var location: VolumePlace? = null
+
     @SerializedName("selectedTile")
     var selectedTile: TileImage = TileImage.NONE
 

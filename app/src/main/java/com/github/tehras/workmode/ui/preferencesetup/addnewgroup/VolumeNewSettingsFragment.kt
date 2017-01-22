@@ -10,6 +10,7 @@ import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.addToBundle
 import com.github.tehras.workmode.extensions.getColorDefault
+import com.github.tehras.workmode.extensions.setButtonColor
 import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.ui.base.PresenterFragment
 import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
@@ -21,6 +22,7 @@ import timber.log.Timber
  * A placeholder fragment containing a simple view.
  */
 class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, VolumeNewSettingsPresenter>(), VolumeNewSettingsView {
+
 
     var showedAlertMessage: Boolean = false
 
@@ -80,6 +82,7 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         presenter.setUpOutVolumeControls(out_ring_volume_container)
         presenter.setUpButtonBar(cancel_button, create_button)
         presenter.setUpName(name_field)
+        presenter.setUpLocation(location_layout)
     }
 
     override fun showTileNeedsToBeSelected(b: Boolean) {
@@ -114,6 +117,27 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
                 showedAlertMessage = true
                 activity.onBackPressed()
                 (activity as VolumeActivity).refreshScene()
+            }
+        }
+    }
+
+    override fun showLocationExisted(address: String?) {
+        location_selected_view.visibility = View.VISIBLE
+        select_location_view.visibility = View.GONE
+
+        current_location_value.text = address
+    }
+
+    override fun showSelectLocation() {
+        location_selected_view.visibility = View.GONE
+        select_location_view.visibility = View.VISIBLE
+
+        location_button.setButtonColor(android.R.color.white)
+        location_button.setOnClickListener {
+            if (activity is VolumeActivity) {
+                (activity as VolumeActivity).startForLocation {
+                    presenter.saveLocation(it)
+                }
             }
         }
     }
