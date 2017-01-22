@@ -154,6 +154,8 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             view?.showTileNeedsToBeSelected(true)
         } else if (scenePreference.name.isNullOrEmpty()) {
             view?.showNameNeedsToBeSelected(true)
+        } else if (scenePreference.location == null) {
+            view?.showLocationNeedsToBeSelected(true)
         } else {
             //save the request
             ScenePreferenceSettings.saveScene(scenePreference, preferences)

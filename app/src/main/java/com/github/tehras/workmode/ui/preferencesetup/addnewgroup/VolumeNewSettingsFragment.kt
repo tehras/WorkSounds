@@ -109,6 +109,16 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         }
     }
 
+    override fun showLocationNeedsToBeSelected(b: Boolean) {
+        view?.let {
+            if (b) {
+                Snackbar.make(it, "Please select a location", Snackbar.LENGTH_SHORT).show()
+
+                location_button
+            }
+        }
+    }
+
     override fun notifySceneSubmitted() {
         create_button.visibility = View.INVISIBLE
         success_layout.show {

@@ -10,4 +10,5 @@ interface VolumeNewSettingsView : MvpView {
     fun notifySceneSubmitted()
     fun showLocationExisted(address: String?)
     fun showSelectLocation()
+    fun showLocationNeedsToBeSelected(b: Boolean)
 }
