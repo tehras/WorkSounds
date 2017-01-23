@@ -114,7 +114,9 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
             if (b) {
                 Snackbar.make(it, "Please select a location", Snackbar.LENGTH_SHORT).show()
 
-                location_button
+                location_button_label.setTextColor(it.context.getColorDefault(R.color.errorRed))
+            } else {
+                name_title.setTextColor(it.context.getColorDefault(android.R.color.black))
             }
         }
     }
@@ -147,6 +149,7 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
             if (activity is VolumeActivity) {
                 (activity as VolumeActivity).startForLocation {
                     presenter.saveLocation(it)
+                    showLocationNeedsToBeSelected(false)
                 }
             }
         }

@@ -49,4 +49,5 @@
     <string name="location">Location</string>
     <string name="current_location">Location -</string>
     <string name="scene_name">Scene Name</string>
+    <string name="location_help_text">This app requires Location Permission to work properly. We will not be tracking your location actively, and there will be no battery implications.</string>
 </resources>
