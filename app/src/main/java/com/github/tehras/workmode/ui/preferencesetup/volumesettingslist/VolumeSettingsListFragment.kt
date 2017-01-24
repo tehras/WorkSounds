@@ -22,17 +22,15 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
     }
 
     override fun edit(group: ScenePreference) {
-        //TODO implement
-        view?.let {
-            Snackbar.make(it, "TODO implement EDIT", Snackbar.LENGTH_SHORT).show()
-        }
+        if (activity is VolumeActivity)
+            (activity as VolumeActivity).showNewVolumeFragment(group)
     }
 
     override fun delete(group: ScenePreference) {
-        //TODO implement
         view?.let {
-            Snackbar.make(it, "TODO implement DELETE", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(it, "Scene ${group.name} was removed from the list", Snackbar.LENGTH_SHORT).show()
         }
+        presenter.refreshAdapter()
     }
 
     override fun injectDependencies(graph: AppComponent) {

@@ -3,7 +3,6 @@ package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist
 import android.content.SharedPreferences
 import android.support.v7.widget.RecyclerView
 import com.github.tehras.workmode.models.scene.ScenePreference
-import com.github.tehras.workmode.models.settings.VolumeSettingGroup
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.listview.VolumeSettingsListAdapter
@@ -15,7 +14,10 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
 
     private var adapter: VolumeSettingsListAdapter? = null
     private val editFunc: (group: ScenePreference) -> Unit = { view?.edit(it) }
-    private val deleteFunc: (group: ScenePreference) -> Unit = { view?.delete(it) }
+    private val deleteFunc: (group: ScenePreference) -> Unit = {
+        ScenePreferenceSettings.deleteScene(it, preferences)
+        view?.delete(it)
+    }
     private val addFunc: () -> Unit = { view?.add() }
 
     /**

@@ -47,7 +47,7 @@ class PermissionsActivity : AppCompatActivity() {
                     finish()
                 } else {
                     //we really need this permission
-                    Snackbar.make(this.getRootView(), "Location Permission is Required", Snackbar.LENGTH_LONG)
+                    Snackbar.make(this.getRootView(), "Location Permission is Required", Snackbar.LENGTH_LONG).show()
                 }
             }
         }

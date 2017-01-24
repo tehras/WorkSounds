@@ -11,7 +11,7 @@ import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.addToBundle
 import com.github.tehras.workmode.extensions.getColorDefault
 import com.github.tehras.workmode.extensions.setButtonColor
-import com.github.tehras.workmode.models.settings.VolumeSettingGroup
+import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterFragment
 import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
 import com.github.tehras.workmode.ui.preferencesetup.fragmentcommon.VolumeFragmentModule
@@ -22,7 +22,6 @@ import timber.log.Timber
  * A placeholder fragment containing a simple view.
  */
 class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, VolumeNewSettingsPresenter>(), VolumeNewSettingsView {
-
 
     var showedAlertMessage: Boolean = false
 
@@ -50,7 +49,6 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         if (activity is VolumeActivity) {
             (activity as VolumeActivity).onBackPressedIgnoreOverride()
         }
-        activity.onBackPressed()
     }
 
     override fun injectDependencies(graph: AppComponent) {
@@ -60,7 +58,7 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
     companion object {
         val ARG_GROUP = "argument_group_settings"
 
-        fun instance(group: VolumeSettingGroup?): VolumeNewSettingsFragment {
+        fun instance(group: ScenePreference?): VolumeNewSettingsFragment {
             return VolumeNewSettingsFragment().addToBundle {
                 group?.let { putSerializable(ARG_GROUP, it) }
             }
@@ -76,6 +74,10 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         super.onPresenterReady()
 
         //start populating the layout
+        arguments?.let {
+            presenter.setEditLayout(it.getSerializable(ARG_GROUP) as ScenePreference)
+        }
+
         //horizontal chooser
         presenter.setUpHorizontalImagePicker(image_selector_list_view)
         presenter.setUpInVolumeControls(linearLayout)

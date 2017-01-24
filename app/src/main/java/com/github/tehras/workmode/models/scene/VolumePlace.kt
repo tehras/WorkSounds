@@ -21,6 +21,24 @@ class VolumePlace(place: Place) : Serializable {
         return "VolumePlace(location=$location, address=$address)"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as VolumePlace
+
+        if (location != other.location) return false
+        if (address != other.address) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = location?.hashCode() ?: 0
+        result = 31 * result + address.hashCode()
+        return result
+    }
+
     companion object {
         fun fromJson(response: String): VolumePlace {
             return Gson().fromJson(response, VolumePlace::class.java)
@@ -31,6 +49,5 @@ class VolumePlace(place: Place) : Serializable {
         location = VolumeLocation(place.latLng)
         address = place.address.toString()
     }
-
 
 }

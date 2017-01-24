@@ -13,6 +13,36 @@ object ScenePreferenceSettings {
         preference.edit().putString(KEY_SCENE_PREFERENCE_OBJ, addScene(scene, preference)).apply()
     }
 
+    fun updateScene(scene: ScenePreference, preference: SharedPreferences) {
+        val scenes = getAllScenes(preference)
+
+        val changed = scenes.repeatUntil({ it == scene }) { it.update(scene) }
+
+        if (changed)
+            preference.edit().putString(KEY_SCENE_PREFERENCE_OBJ, convertToJson(scenes)).apply()
+    }
+
+    fun deleteScene(scene: ScenePreference, preference: SharedPreferences) {
+        val scenes = getAllScenes(preference)
+
+        val changed = scenes.repeatUntil({ it == scene }) { scenes.remove(it) }
+
+        if (changed)
+            preference.edit().putString(KEY_SCENE_PREFERENCE_OBJ, convertToJson(scenes)).apply()
+
+    }
+
+    inline fun <T> ArrayList<T>.repeatUntil(equalCondition: (T) -> Boolean, task: (T) -> Unit): Boolean {
+        this.forEach {
+            if (equalCondition(it)) {
+                task(it)
+                return true
+            }
+        }
+
+        return false
+    }
+
     fun getAllScenes(preference: SharedPreferences): ArrayList<ScenePreference> {
         val savedScenes = preference.getString(KEY_SCENE_PREFERENCE_OBJ, "")
         if (savedScenes.isNullOrEmpty()) {

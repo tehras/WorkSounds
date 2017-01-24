@@ -10,7 +10,7 @@ import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.enterCircularReveal
 import com.github.tehras.workmode.extensions.getLastFragmentInStack
 import com.github.tehras.workmode.extensions.startFragment
-import com.github.tehras.workmode.models.settings.VolumeSettingGroup
+import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterActivity
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeSettingsListFragment
@@ -19,6 +19,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlacePicker
 import kotlinx.android.synthetic.main.activity_volume.*
+import kotlinx.android.synthetic.main.content_volume.*
 import timber.log.Timber
 
 class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeView {
@@ -33,25 +34,32 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
 
         if (savedInstanceState == null) {
             //start first fragment
+            VolumeSettingsListFragment().startFragment(this, list_fragment_container, false)
             this.enterCircularReveal(root_view) //animate
         }
     }
 
     fun onBackPressedIgnoreOverride() {
-        super.onBackPressed()
+        supportFragmentManager.popBackStackImmediate()
     }
 
     override fun onBackPressed() {
         val fragment = this.getLastFragmentInStack()
         Timber.d("fragment - $fragment")
-        if (fragment !is VolumeNewSettingsFragment || fragment.alreadyShowedCancelMessage()) {
+        if (fragment is VolumeNewSettingsFragment) {
+            if (fragment.alreadyShowedCancelMessage())
+                supportFragmentManager.popBackStackImmediate()
+            else {
+                fragment.showCancelDialog()
+            }
+        } else if (fragment == null) {
+            moveTaskToBack(true)
+        } else {
             super.onBackPressed()
-        } else if (!fragment.alreadyShowedCancelMessage()) {
-            fragment.showCancelDialog()
         }
     }
 
-    fun showNewVolumeFragment(volumeGroup: VolumeSettingGroup?) {
+    fun showNewVolumeFragment(volumeGroup: ScenePreference?) {
         VolumeNewSettingsFragment.instance(volumeGroup).startFragment(this, new_scene_view_container, true)
     }
 

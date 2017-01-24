@@ -15,4 +15,24 @@ class VolumeLocation(location: LatLng) : Serializable {
         latitude = location.latitude
         longitude = location.longitude
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other?.javaClass != javaClass) return false
+
+        other as VolumeLocation
+
+        if (latitude != other.latitude) return false
+        if (longitude != other.longitude) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = latitude?.hashCode() ?: 0
+        result = 31 * result + (longitude?.hashCode() ?: 0)
+        return result
+    }
+
+
 }

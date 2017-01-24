@@ -23,5 +23,7 @@ fun <T : Fragment> T.startFragment(activity: BaseActivity, view: View, animate: 
     if (animate)
         tran.setCustomAnimations(R.anim.abc_grow_fade_in_from_bottom, R.anim.abc_shrink_fade_out_from_bottom)
 
-    tran.replace(view.id, this, this.javaClass.simpleName).commitNow()
+    tran.replace(view.id, this, this.javaClass.simpleName)
+            .addToBackStack(this.javaClass.simpleName)
+            .commit()
 }

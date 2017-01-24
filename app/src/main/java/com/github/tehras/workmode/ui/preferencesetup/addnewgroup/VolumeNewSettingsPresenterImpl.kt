@@ -27,6 +27,12 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
 
     //If edit i'll have to add some logic here
     var scenePreference: ScenePreference = ScenePreference()
+    var isEditLayout: Boolean = false
+
+    override fun setEditLayout(scenePreference: ScenePreference) {
+        this.scenePreference = scenePreference
+        this.isEditLayout = true
+    }
 
     override fun setUpName(nameField: EditText?) {
         nameField?.addSimpleTextChangeListener {
@@ -69,10 +75,10 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             updatePreference(scenePreference.outMediaPreferenceSelected)
 
             ringVolume.onProgressChangeListener { current, max ->
-                scenePreference.inRingVolume = AudioSettings(max, current)
+                scenePreference.outRingVolume = AudioSettings(max, current)
             }
             mediaVolume.onProgressChangeListener { current, max ->
-                scenePreference.inMediaVolume = AudioSettings(max, current)
+                scenePreference.outMediaVolume = AudioSettings(max, current)
             }
         }
     }
@@ -136,9 +142,12 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun setUpButtonBar(cancelButton: AppCompatButton?, createButton: AppCompatButton?) {
         cancelButton?.setButtonColor(android.R.color.white)
         createButton?.setButtonColor(android.R.color.white)
+        if (isEditLayout)
+            createButton?.text = "Update"
 
         cancelButton?.setOnClickListener {
             view?.showCancelDialog()
@@ -158,7 +167,11 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             view?.showLocationNeedsToBeSelected(true)
         } else {
             //save the request
-            ScenePreferenceSettings.saveScene(scenePreference, preferences)
+            if (!isEditLayout)
+                ScenePreferenceSettings.saveScene(scenePreference, preferences)
+            else {
+                ScenePreferenceSettings.updateScene(scenePreference, preferences)
+            }
 
             //notify view everything went through fine
             view?.notifySceneSubmitted()
