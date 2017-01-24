@@ -25,7 +25,7 @@
         <activity
             android:name=".ui.preferencesetup.VolumeActivity"
             android:label="@string/title_activity_volume"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme.NoAnim"/>
         <activity
             android:name=".ui.splashscreen.SplashScreen"
             android:theme="@style/SplashTheme">

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.extensions.enterCircularReveal
 import com.github.tehras.workmode.extensions.getLastFragmentInStack
 import com.github.tehras.workmode.extensions.startFragment
 import com.github.tehras.workmode.models.settings.VolumeSettingGroup
@@ -27,7 +28,13 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_volume)
+
+        if (savedInstanceState == null) {
+            //start first fragment
+            this.enterCircularReveal(root_view) //animate
+        }
     }
 
     fun onBackPressedIgnoreOverride() {

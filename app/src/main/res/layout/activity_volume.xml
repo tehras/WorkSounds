@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.github.tehras.workmode.ui.preferencesetup.VolumeActivity">
+<FrameLayout android:id="@+id/root_view"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:visibility="invisible"
+             tools:context="com.github.tehras.workmode.ui.preferencesetup.VolumeActivity"
+             tools:visibility="visible">
 
-    <include layout="@layout/content_volume" />
+    <include layout="@layout/content_volume"/>
 
     <FrameLayout
         android:id="@+id/new_scene_view_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 </FrameLayout>
