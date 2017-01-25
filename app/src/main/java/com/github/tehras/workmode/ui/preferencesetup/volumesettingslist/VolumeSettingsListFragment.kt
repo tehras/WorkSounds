@@ -47,6 +47,8 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
         //start init
         fragment_setting_list_list_view.defaultInit()
         fragment_setting_list_list_view.adapter = presenter.obtainAdapter()
+
+        presenter.initFab(new_scene)
     }
 
     fun refreshListView() {

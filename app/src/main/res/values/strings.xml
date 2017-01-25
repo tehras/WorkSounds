@@ -50,4 +50,6 @@
     <string name="current_location">Location -</string>
     <string name="scene_name">Scene Name</string>
     <string name="location_help_text">This app requires Location Permission to work properly. We will not be tracking your location actively, and there will be no battery implications.</string>
+    <string name="empty_text">No scenes added yet, please go ahead and start with your first one!</string>
+    <string name="no_scenes_added_yet">No scenes added yet</string>
 </resources>

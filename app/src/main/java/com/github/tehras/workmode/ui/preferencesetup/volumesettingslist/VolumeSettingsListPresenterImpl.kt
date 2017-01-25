@@ -1,10 +1,13 @@
 package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist
 
 import android.content.SharedPreferences
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
+import com.github.tehras.workmode.ui.base.BaseActivity
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.listview.VolumeSettingsListAdapter
 import timber.log.Timber
 import java.util.*
@@ -18,7 +21,20 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         ScenePreferenceSettings.deleteScene(it, preferences)
         view?.delete(it)
     }
-    private val addFunc: () -> Unit = { view?.add() }
+
+    private var helper: VolumeServiceInitHelper? = null
+
+    override fun bindView(view: VolumeSettingsListView) {
+        super.bindView(view)
+
+        helper = VolumeServiceInitHelper(preferences, view as BaseActivity)
+    }
+
+    override fun unbindView() {
+        super.unbindView()
+
+        helper?.unregisterFence()
+    }
 
     /**
      * Returns List View Adapter
@@ -28,14 +44,27 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         val setting = volumeSettings()
 
         if (adapter == null)
-            adapter = VolumeSettingsListAdapter(setting, addFunc, editFunc, deleteFunc)
+            adapter = VolumeSettingsListAdapter(setting, editFunc, deleteFunc)
         else
             refreshAdapter()
         return adapter
     }
 
     override fun refreshAdapter() {
-        adapter?.update(volumeSettings(), addFunc, editFunc, deleteFunc)
+        adapter?.update(volumeSettings(), editFunc, deleteFunc)
+
+        helper?.unregisterFence()
+        helper?.registerFence()
+    }
+
+    override fun initFab(new_scene: FloatingActionButton?) {
+        //check for size
+        if (volumeSettings()?.size ?: 0 <= 4) {
+            new_scene?.visibility = View.VISIBLE
+            new_scene?.setOnClickListener { view?.add() }
+        } else {
+            new_scene?.visibility = View.GONE
+        }
     }
 
     private fun volumeSettings(): ArrayList<ScenePreference>? {
