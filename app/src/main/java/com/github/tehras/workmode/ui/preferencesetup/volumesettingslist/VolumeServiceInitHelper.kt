@@ -26,6 +26,7 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
         val FENCE_RECEIVER_ACTION = "FENCE_RECEIVE"
         val FENCE_RECEIVER_ACTION_KEY = "fence_receiver_key"
         val FENCE_RECEIVER_ACTION_ENTRY_KEY = "fence_receiver_entry_key"
+        val FENCE_RECEIVER_ACTION_EXIT_KEY = "fence_receiver_exit_key"
     }
 
     private var mGoogleApiClient: GoogleApiClient? = null
@@ -60,12 +61,14 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
             preferences.forEach {
                 val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
                 val locationEnteringFence = LocationFence.entering(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
+                val locationExitingFence = LocationFence.exiting(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
 
                 Awareness.FenceApi.updateFences(
                         mGoogleApiClient,
                         FenceUpdateRequest.Builder()
                                 .addFence(createKey(it), locationFence, mFencePendingIntent)
                                 .addFence(createEntryKey(it), locationEnteringFence, mFencePendingIntent)
+                                .addFence(createExitKey(it), locationExitingFence, mFencePendingIntent)
                                 .build())
                         .setResultCallback { status ->
                             if (status.isSuccess) {
@@ -82,8 +85,11 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
         return "${FENCE_RECEIVER_ACTION_KEY}_${it.id}"
     }
 
-
     private fun createEntryKey(it: ScenePreference): String {
+        return "${FENCE_RECEIVER_ACTION_ENTRY_KEY}_${it.id}"
+    }
+
+    private fun createExitKey(it: ScenePreference): String {
         return "${FENCE_RECEIVER_ACTION_ENTRY_KEY}_${it.id}"
     }
 

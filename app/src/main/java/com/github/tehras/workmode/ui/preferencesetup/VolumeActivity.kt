@@ -7,9 +7,9 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.extensions.addFragment
 import com.github.tehras.workmode.extensions.enterCircularReveal
 import com.github.tehras.workmode.extensions.getLastFragmentInStack
-import com.github.tehras.workmode.extensions.startFragment
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterActivity
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
@@ -34,7 +34,7 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
 
         if (savedInstanceState == null) {
             //start first fragment
-            VolumeSettingsListFragment().startFragment(this, list_fragment_container, false)
+            VolumeSettingsListFragment().addFragment(this, list_fragment_container, false)
             this.enterCircularReveal(root_view) //animate
         }
     }
@@ -60,7 +60,7 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
     }
 
     fun showNewVolumeFragment(volumeGroup: ScenePreference?) {
-        VolumeNewSettingsFragment.instance(volumeGroup).startFragment(this, new_scene_view_container, true)
+        VolumeNewSettingsFragment.instance(volumeGroup).addFragment(this, new_scene_view_container, true)
     }
 
     fun refreshScene() {

@@ -2,6 +2,7 @@ package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist
 
 import android.content.SharedPreferences
 import android.support.design.widget.FloatingActionButton
+import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.github.tehras.workmode.models.scene.ScenePreference
@@ -27,7 +28,7 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
     override fun bindView(view: VolumeSettingsListView) {
         super.bindView(view)
 
-        helper = VolumeServiceInitHelper(preferences, view as BaseActivity)
+        helper = VolumeServiceInitHelper(preferences, (view as Fragment).activity as BaseActivity)
     }
 
     override fun unbindView() {

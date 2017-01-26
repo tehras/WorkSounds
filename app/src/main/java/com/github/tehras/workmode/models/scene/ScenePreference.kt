@@ -29,7 +29,6 @@ class ScenePreference : Serializable {
     @SerializedName("selectedTile")
     var selectedTile: TileImage = TileImage.NONE
 
-
     fun update(scene: ScenePreference) {
         this.name = scene.name
         this.inMediaVolume = scene.inMediaVolume

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest package="com.github.tehras.workmode"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
 
@@ -20,7 +21,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".ui.work.WorkActivity"/>
         <activity
             android:name=".ui.preferencesetup.VolumeActivity"
@@ -37,9 +39,39 @@
         </activity>
 
         <service
-            android:name=".services.WorkSettingsTileService"
-            android:icon="@drawable/ic_work_tile"
-            android:label="@string/work_tile_label"
+            android:name=".services.PreferenceOneTileService"
+            android:icon="@drawable/ic_default_tile"
+            android:label="Scene 1"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.PreferenceTwoTileService"
+            android:icon="@drawable/ic_default_tile"
+            android:label="Scene 2"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.PreferenceThreeTileService"
+            android:icon="@drawable/ic_default_tile"
+            android:label="Scene 3"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".services.PreferenceFourTileService"
+            android:icon="@drawable/ic_default_tile"
+            android:label="Scene 4"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE"/>

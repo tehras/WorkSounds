@@ -27,3 +27,16 @@ fun <T : Fragment> T.startFragment(activity: BaseActivity, view: View, animate: 
             .addToBackStack(this.javaClass.simpleName)
             .commit()
 }
+
+@SuppressLint("PrivateResource", "CommitTransaction")
+fun <T : Fragment> T.addFragment(activity: BaseActivity, view: View, animate: Boolean) {
+    val tran = activity.supportFragmentManager.beginTransaction()
+
+    if (animate)
+        tran.setCustomAnimations(R.anim.abc_grow_fade_in_from_bottom, R.anim.abc_shrink_fade_out_from_bottom)
+
+    tran.add(view.id, this, this.javaClass.simpleName)
+            .addToBackStack(this.javaClass.simpleName)
+            .commit()
+}
+
