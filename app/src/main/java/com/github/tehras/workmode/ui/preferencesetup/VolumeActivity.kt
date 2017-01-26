@@ -52,6 +52,8 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
             else {
                 fragment.showCancelDialog()
             }
+        } else if (fragment is VolumeSettingsListFragment) {
+            moveTaskToBack(true)
         } else if (fragment == null) {
             moveTaskToBack(true)
         } else {

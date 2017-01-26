@@ -52,8 +52,10 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
     }
 
     override fun refreshAdapter() {
+        Timber.d("refreshing adapter ${volumeSettings()}")
         adapter?.update(volumeSettings(), editFunc, deleteFunc)
 
+        helper?.initialize()
         helper?.unregisterFence()
         helper?.registerFence()
     }

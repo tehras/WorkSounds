@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.extensions.setButtonColor
 import kotlinx.android.synthetic.main.view_success_layout.view.*
 
 @Suppress("UNUSED")
@@ -16,6 +17,8 @@ class SuccessLayout(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) 
 
     init {
         View.inflate(this.context, R.layout.view_success_layout, this)
+
+        success_checkmark.setButtonColor(android.R.color.white)
     }
 
     fun show(postAnim: () -> Unit) {

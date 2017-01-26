@@ -6,7 +6,6 @@ import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.inflateLayoutFromParent
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.AbstractViewHolder
-import timber.log.Timber
 import java.util.*
 
 class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
@@ -17,11 +16,11 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
     private val VIEW_TYPE_EMPTY: Int = 1
 
     fun update(volumeSettings: ArrayList<ScenePreference>?, editFunc: (ScenePreference) -> Unit, deleteFunc: (ScenePreference) -> Unit) {
-        Timber.d("obtainAdapter")
-
         this.volumeSettings = volumeSettings
         this.editFunc = editFunc
         this.deleteFunc = deleteFunc
+
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<ScenePreference>?, position: Int) {
@@ -29,11 +28,23 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
     }
 
     override fun getItemCount(): Int {
-        return (volumeSettings?.size ?: 0) + 1// The one is for the "Add message"
+        val size = getSize()
+
+        if (size == 0)
+            return 1
+
+        return size
+    }
+
+    private fun getSize(): Int {
+        return volumeSettings?.size ?: 0
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if ((position + 1) != itemCount) VIEW_TYPE_DEFAULT_HOLD else VIEW_TYPE_EMPTY
+        val size = getSize()
+
+        if (size == 0) return VIEW_TYPE_EMPTY else return VIEW_TYPE_DEFAULT_HOLD
+//        return if ((position + 1) != itemCount) VIEW_TYPE_DEFAULT_HOLD else VIEW_TYPE_EMPTY
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<ScenePreference> {

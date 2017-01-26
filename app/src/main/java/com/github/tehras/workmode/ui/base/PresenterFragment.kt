@@ -17,7 +17,7 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
 
     // We call to bind presenter from onActivityCreated and onStart
     // This flag will ensure only one is used
-    protected var viewIsBind: Boolean = false
+//    protected var viewIsBind: Boolean = false
 
     // Boolean flag to avoid delivering the Presenter twice. Calling initLoader in onActivityCreated means
     // onLoadFinished will be called twice during configuration change.
@@ -38,17 +38,25 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
      */
     @CallSuper
     protected open fun onPresenterReady() {
-        if (!viewIsBind)
-            bindPresenter()
+        bindPresenter()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//        initLoader()
+//    }
+
+    override fun onStart() {
+        super.onStart()
+
+        delivered = false
 
         initLoader()
     }
 
     private fun initLoader() {
+        Timber.d("initLoader")
         loaderManager.initLoader<T>(LOADER_ID, null, this)
     }
 
@@ -65,9 +73,9 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
     @CallSuper
     override fun onStop() {
         super.onStop()
+        delivered = false
         Timber.d("unbindView")
         presenter.unbindView()
-        viewIsBind = false
     }
 
     protected fun getViewLayer(): V {
@@ -76,18 +84,20 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
     }
 
     override fun onLoadFinished(loader: Loader<T>?, presenter: T) {
+        Timber.d("onLoadFinished $delivered")
+
         if (!delivered) {
             onPresenterProvided(presenter)
             delivered = true
+
+            onPresenterReady()
         }
-        onPresenterReady()
     }
 
     private fun bindPresenter() {
         Timber.d("bindPresenter")
         presenter.bindView(getViewLayer())
         firstLoad = false
-        viewIsBind = true
     }
 
     override fun onCreateLoader(id: Int, bundle: Bundle?): Loader<T> {

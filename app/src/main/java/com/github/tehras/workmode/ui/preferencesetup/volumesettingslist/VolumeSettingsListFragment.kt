@@ -1,5 +1,6 @@
 package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
@@ -8,27 +9,33 @@ import android.view.ViewGroup
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.defaultInit
+import com.github.tehras.workmode.extensions.setTextColor
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterFragment
 import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
 import com.github.tehras.workmode.ui.preferencesetup.fragmentcommon.VolumeFragmentModule
 import kotlinx.android.synthetic.main.fragment_settings_list.*
+import timber.log.Timber
+
 
 open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView, VolumeSettingsListPresenter>(), VolumeSettingsListView {
     override fun add() {
+        Timber.d("add called")
         //start New Volume Settings Fragment
         if (activity is VolumeActivity)
             (activity as VolumeActivity).showNewVolumeFragment(null)
     }
 
     override fun edit(group: ScenePreference) {
+        Timber.d("edit called")
         if (activity is VolumeActivity)
             (activity as VolumeActivity).showNewVolumeFragment(group)
     }
 
     override fun delete(group: ScenePreference) {
         view?.let {
-            Snackbar.make(it, "Scene ${group.name} was removed from the list", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(it, "Scene ${group.name} was removed from the list", Snackbar.LENGTH_SHORT)
+                    .setTextColor(Color.WHITE).show()
         }
         presenter.refreshAdapter()
     }

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import timber.log.Timber
 import java.util.*
 
 object ScenePreferenceSettings {
@@ -25,7 +26,13 @@ object ScenePreferenceSettings {
     fun deleteScene(scene: ScenePreference, preference: SharedPreferences) {
         val scenes = getAllScenes(preference)
 
-        val changed = scenes.repeatUntil({ it == scene }) { scenes.remove(it) }
+        val changed = scenes.repeatUntil({
+            Timber.d("deleteScene -> $it == $scene")
+            it == scene
+        }) {
+            Timber.d("removing from the scene $it")
+            scenes.remove(it)
+        }
 
         if (changed)
             preference.edit().putString(KEY_SCENE_PREFERENCE_OBJ, convertToJson(scenes)).apply()

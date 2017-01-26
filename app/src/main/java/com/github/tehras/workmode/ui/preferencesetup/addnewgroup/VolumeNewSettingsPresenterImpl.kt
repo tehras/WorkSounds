@@ -35,6 +35,8 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
     }
 
     override fun setUpName(nameField: EditText?) {
+        if (isEditLayout)
+            nameField?.setText(scenePreference.name)
         nameField?.addSimpleTextChangeListener {
             scenePreference.name = it
             view?.showNameNeedsToBeSelected(false)
@@ -47,6 +49,10 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             val ringVolume = linearLayout.findViewById(R.id.ring_volume) as VolumeProgressLayout
             val mediaVolume = linearLayout.findViewById(R.id.media_volume) as VolumeProgressLayout
 
+            if (isEditLayout) {
+                ringVolume.setVolumeLevel(scenePreference.inRingVolume?.setMusicVolume ?: 0, scenePreference.inRingVolume?.maxMusicVolume ?: 0)
+                mediaVolume.setVolumeLevel(scenePreference.inMediaVolume?.setMusicVolume ?: 0, scenePreference.inMediaVolume?.maxMusicVolume ?: 0)
+            }
             //media volume setup
             mediaVolume.onProgressChangeListener { current, max ->
                 scenePreference.inMediaVolume = AudioSettings(max, current)
@@ -67,6 +73,13 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             val mediaVolume = linearLayout.findViewById(R.id.custom_media_volume) as VolumeProgressLayout
 
             val updatePreference = { preference: AudioSetVolumePreference -> updateSelectedPreference(preference, ringVolume, mediaVolume, radioDoNothing, radioDoPrevious, radioSetCustom) }
+
+            if (isEditLayout) {
+                updatePreference(scenePreference.outMediaPreferenceSelected)
+
+                ringVolume.setVolumeLevel(scenePreference.outRingVolume?.setMusicVolume ?: 0, scenePreference.outRingVolume?.maxMusicVolume ?: 0)
+                mediaVolume.setVolumeLevel(scenePreference.outMediaVolume?.setMusicVolume ?: 0, scenePreference.outMediaVolume?.maxMusicVolume ?: 0)
+            }
 
             radioDoNothing.setOnClickListener { updatePreference(AudioSetVolumePreference.DO_NOTHING) }
             radioDoPrevious.setOnClickListener { updatePreference(AudioSetVolumePreference.BACK_TO_PREVIOUS) }

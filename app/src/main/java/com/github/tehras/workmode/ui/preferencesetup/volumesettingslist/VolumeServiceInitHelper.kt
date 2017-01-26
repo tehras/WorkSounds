@@ -34,6 +34,10 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
     private var fenceReceiver: WorkLocationService? = null
 
     init {
+        initialize()
+    }
+
+    fun initialize() {
         val preferences = ScenePreferenceSettings.getAllScenes(preference = preferences)
         if (preferences.isNotEmpty()) {
             //initialize

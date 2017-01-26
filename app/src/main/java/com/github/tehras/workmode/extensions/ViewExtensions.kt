@@ -5,14 +5,22 @@ import android.graphics.PorterDuff
 import android.os.Build
 import android.support.annotation.ColorInt
 import android.support.annotation.IntegerRes
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.TextView
 
 fun Button.setButtonColor(@IntegerRes color: Int) {
+    @Suppress("DEPRECATION")
+    this.background.setColorFilter(this.resources.getColor(color), PorterDuff.Mode.SRC_ATOP)
+}
+
+fun ImageButton.setButtonColor(@IntegerRes color: Int) {
     @Suppress("DEPRECATION")
     this.background.setColorFilter(this.resources.getColor(color), PorterDuff.Mode.SRC_ATOP)
 }
@@ -20,6 +28,14 @@ fun Button.setButtonColor(@IntegerRes color: Int) {
 fun RecyclerView.defaultInit() {
     this.setHasFixedSize(true)
     this.layoutManager = LinearLayoutManager(this.context)
+}
+
+fun Snackbar.setTextColor(@ColorInt color: Int): Snackbar {
+    val view = this.view
+    val tv = view.findViewById(android.support.design.R.id.snackbar_text) as TextView
+    tv.setTextColor(color)
+
+    return this
 }
 
 fun Context.getColorDefault(@ColorInt color: Int): Int {

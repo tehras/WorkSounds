@@ -1,5 +1,6 @@
 package com.github.tehras.workmode.ui.preferencesetup.addnewgroup
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
@@ -11,6 +12,7 @@ import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.addToBundle
 import com.github.tehras.workmode.extensions.getColorDefault
 import com.github.tehras.workmode.extensions.setButtonColor
+import com.github.tehras.workmode.extensions.setTextColor
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterFragment
 import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
@@ -90,7 +92,7 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
     override fun showTileNeedsToBeSelected(b: Boolean) {
         view?.let {
             if (b) {
-                Snackbar.make(it, "Please select a tile", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(it, "Please select a tile", Snackbar.LENGTH_SHORT).setTextColor(Color.WHITE).show()
 
                 icon_title.setTextColor(it.context.getColorDefault(R.color.errorRed))
             } else {
@@ -102,7 +104,7 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
     override fun showNameNeedsToBeSelected(b: Boolean) {
         view?.let {
             if (b) {
-                Snackbar.make(it, "Please enter a name", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(it, "Please enter a name", Snackbar.LENGTH_SHORT).setTextColor(Color.WHITE).show()
 
                 name_title.setTextColor(it.context.getColorDefault(R.color.errorRed))
             } else {
@@ -114,7 +116,7 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
     override fun showLocationNeedsToBeSelected(b: Boolean) {
         view?.let {
             if (b) {
-                Snackbar.make(it, "Please select a location", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(it, "Please select a location", Snackbar.LENGTH_SHORT).setTextColor(Color.WHITE).show()
 
                 location_button_label.setTextColor(it.context.getColorDefault(R.color.errorRed))
             } else {
@@ -129,8 +131,11 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
             //close fragment
             if (activity is VolumeActivity) {
                 showedAlertMessage = true
+                activity?.let {
+                    (activity as VolumeActivity).refreshScene()
+                }
+
                 activity.onBackPressed()
-                (activity as VolumeActivity).refreshScene()
             }
         }
     }
