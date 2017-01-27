@@ -26,6 +26,7 @@ import timber.log.Timber
 class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, VolumeNewSettingsPresenter>(), VolumeNewSettingsView {
 
     var showedAlertMessage: Boolean = false
+    var scene: ScenePreference? = null
 
     override fun showCancelDialog() {
         showedAlertMessage = true
@@ -62,7 +63,9 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
 
         fun instance(group: ScenePreference?): VolumeNewSettingsFragment {
             return VolumeNewSettingsFragment().addToBundle {
-                group?.let { putSerializable(ARG_GROUP, it) }
+                group?.let {
+                    putSerializable(ARG_GROUP, it)
+                }
             }
         }
     }
@@ -72,12 +75,27 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         return inflater.inflate(R.layout.fragment_volume, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        savedInstanceState?.let {
+            restoreArgs(it)
+        }
+        arguments?.let {
+            restoreArgs(it)
+        }
+    }
+
+    private fun restoreArgs(it: Bundle): Unit {
+        scene = it.getSerializable(ARG_GROUP) as ScenePreference?
+    }
+
     override fun onPresenterReady() {
         super.onPresenterReady()
 
         //start populating the layout
-        arguments?.let {
-            presenter.setEditLayout(it.getSerializable(ARG_GROUP) as ScenePreference)
+        scene?.let {
+            presenter.setEditLayout(it)
         }
 
         //horizontal chooser
@@ -140,11 +158,22 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         }
     }
 
+    val locationListener: View.OnClickListener = View.OnClickListener {
+        if (activity is VolumeActivity) {
+            (activity as VolumeActivity).startForLocation {
+                presenter.saveLocation(it)
+                showLocationNeedsToBeSelected(false)
+            }
+        }
+    }
+
     override fun showLocationExisted(address: String?) {
         location_selected_view.visibility = View.VISIBLE
         select_location_view.visibility = View.GONE
 
         current_location_value.text = address
+        location_button_edit.setButtonColor(android.R.color.white)
+        location_button_edit.setOnClickListener(locationListener)
     }
 
     override fun showSelectLocation() {
@@ -152,13 +181,14 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         select_location_view.visibility = View.VISIBLE
 
         location_button.setButtonColor(android.R.color.white)
-        location_button.setOnClickListener {
-            if (activity is VolumeActivity) {
-                (activity as VolumeActivity).startForLocation {
-                    presenter.saveLocation(it)
-                    showLocationNeedsToBeSelected(false)
-                }
-            }
+        location_button.setOnClickListener(locationListener)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+
+        scene?.let {
+            outState?.putSerializable(ARG_GROUP, scene)
         }
     }
 

@@ -1,11 +1,14 @@
 package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist
 
+import android.app.Activity
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.github.tehras.workmode.models.scene.ScenePreference
+import com.github.tehras.workmode.services.PreferencesLocationService
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
 import com.github.tehras.workmode.ui.base.BaseActivity
@@ -31,12 +34,6 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         helper = VolumeServiceInitHelper(preferences, (view as Fragment).activity as BaseActivity)
     }
 
-    override fun unbindView() {
-        super.unbindView()
-
-        helper?.unregisterFence()
-    }
-
     /**
      * Returns List View Adapter
      */
@@ -51,13 +48,22 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         return adapter
     }
 
+    val registerReceiver: (PreferencesLocationService, IntentFilter) -> Unit = {
+        prefService, intentFilter ->
+
+        view?.let {
+            if (it is Activity) {
+                it.registerReceiver(prefService, intentFilter)
+            }
+        }
+    }
+
     override fun refreshAdapter() {
         Timber.d("refreshing adapter ${volumeSettings()}")
         adapter?.update(volumeSettings(), editFunc, deleteFunc)
 
-        helper?.initialize()
         helper?.unregisterFence()
-        helper?.registerFence()
+        helper?.registerFence(registerReceiver)
     }
 
     override fun initFab(new_scene: FloatingActionButton?) {

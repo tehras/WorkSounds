@@ -11,7 +11,7 @@ fun <T : Fragment> T.addToBundle(func: Bundle.() -> Unit): T {
     val args: Bundle = Bundle()
 
     args.func()
-    this.arguments = arguments
+    this.arguments = args
 
     return this
 }

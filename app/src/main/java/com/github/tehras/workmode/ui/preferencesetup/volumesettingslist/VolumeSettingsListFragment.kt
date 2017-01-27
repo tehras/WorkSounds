@@ -34,7 +34,7 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
 
     override fun delete(group: ScenePreference) {
         view?.let {
-            Snackbar.make(it, "Scene ${group.name} was removed from the list", Snackbar.LENGTH_SHORT)
+            Snackbar.make(it, "${group.name} was removed from the list", Snackbar.LENGTH_SHORT)
                     .setTextColor(Color.WHITE).show()
         }
         presenter.refreshAdapter()

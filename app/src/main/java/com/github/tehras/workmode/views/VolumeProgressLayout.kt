@@ -1,11 +1,13 @@
 package com.github.tehras.workmode.views
 
 import android.content.Context
+import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.models.scene.AudioSettings
 import kotlinx.android.synthetic.main.view_volume_progress_bar.view.*
 
 
@@ -32,13 +34,32 @@ class VolumeProgressLayout(context: Context?, attrs: AttributeSet?, defStyleAttr
 
         inflate(context, R.layout.view_volume_progress_bar, this)
 
+        //get current system settings
+        val audioManager: AudioManager = this.context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
         when (volType) {
             -1 -> view_volume_image.visibility = View.INVISIBLE
-            RING -> view_volume_image.setImageResource(R.drawable.ic_sound_enabled)
-            MEDIA -> view_volume_image.setImageResource(R.drawable.ic_bell_enabled)
+            RING -> {
+                val ring = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
+
+                view_volume_seek_bar.max = ring.maxMusicVolume
+                view_volume_image.setImageResource(R.drawable.ic_sound_enabled)
+            }
+            MEDIA -> {
+                //get sound quality
+                val music = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
+
+                view_volume_seek_bar.max = music.maxMusicVolume
+                view_volume_image.setImageResource(R.drawable.ic_bell_enabled)
+            }
         }
 
+
         view_volume_seek_bar.isEnabled = volEnabled
+    }
+
+    fun getMaxVolume(): Int {
+        return view_volume_seek_bar.max
     }
 
     /**

@@ -337,6 +337,17 @@
 
                 </RelativeLayout>
 
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/location_button_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="end"
+                    android:text="@string/edit"
+                    android:textColor="@color/colorPrimaryDark" />
+
+
             </LinearLayout>
 
             <LinearLayout

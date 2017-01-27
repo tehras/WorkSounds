@@ -1,7 +1,9 @@
 package com.github.tehras.workmode.ui.preferencesetup.addnewgroup
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
+import android.media.AudioManager
 import android.support.v7.widget.AppCompatButton
 import android.support.v7.widget.AppCompatRadioButton
 import android.support.v7.widget.LinearLayoutManager
@@ -49,16 +51,22 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             val ringVolume = linearLayout.findViewById(R.id.ring_volume) as VolumeProgressLayout
             val mediaVolume = linearLayout.findViewById(R.id.media_volume) as VolumeProgressLayout
 
-            if (isEditLayout) {
-                ringVolume.setVolumeLevel(scenePreference.inRingVolume?.setMusicVolume ?: 0, scenePreference.inRingVolume?.maxMusicVolume ?: 0)
-                mediaVolume.setVolumeLevel(scenePreference.inMediaVolume?.setMusicVolume ?: 0, scenePreference.inMediaVolume?.maxMusicVolume ?: 0)
-            }
             //media volume setup
             mediaVolume.onProgressChangeListener { current, max ->
                 scenePreference.inMediaVolume = AudioSettings(max, current)
             }
             ringVolume.onProgressChangeListener { current, max ->
                 scenePreference.inRingVolume = AudioSettings(max, current)
+            }
+            if (isEditLayout) {
+                ringVolume.setVolumeLevel(scenePreference.inRingVolume?.setMusicVolume ?: 0, scenePreference.inRingVolume?.maxMusicVolume ?: 0)
+                mediaVolume.setVolumeLevel(scenePreference.inMediaVolume?.setMusicVolume ?: 0, scenePreference.inMediaVolume?.maxMusicVolume ?: 0)
+            } else {
+                //get max
+                val audioManager: AudioManager = ringVolume.context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+                scenePreference.inMediaVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0)
+                scenePreference.inRingVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), 0)
             }
         }
     }
