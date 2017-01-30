@@ -172,8 +172,8 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         select_location_view.visibility = View.GONE
 
         current_location_value.text = address
-        location_button_edit.setButtonColor(android.R.color.white)
-        location_button_edit.setOnClickListener(locationListener)
+        current_location_value.setOnClickListener(locationListener)
+
     }
 
     override fun showSelectLocation() {

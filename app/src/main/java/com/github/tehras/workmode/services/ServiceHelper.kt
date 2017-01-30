@@ -11,6 +11,11 @@ import timber.log.Timber
 
 object ServiceHelper {
     fun enableScene(scene: ScenePreference, context: Context?, preference: SharedPreferences, postSoundChange: () -> Unit) {
+        enableScene(scene, context, preference, true, postSoundChange)
+    }
+
+    fun enableScene(scene: ScenePreference, context: Context?, preference: SharedPreferences, showUi: Boolean, postSoundChange: () -> Unit) {
+        Timber.d("trying to enable scene")
         context?.let {
             //record previous state
             //change settings
@@ -43,7 +48,7 @@ object ServiceHelper {
 
             if (music != null && sound != null && !isTheSameVolume(currM, currR, music, sound)) {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, music.setMusicVolume, 0)
-                audioManager.setStreamVolume(AudioManager.STREAM_RING, sound.setMusicVolume, AudioManager.FLAG_SHOW_UI)
+                audioManager.setStreamVolume(AudioManager.STREAM_RING, sound.setMusicVolume, if (showUi) AudioManager.FLAG_SHOW_UI else 0)
 
                 postSoundChange()
             }
@@ -51,6 +56,10 @@ object ServiceHelper {
     }
 
     fun disableScene(scene: ScenePreference, context: Context?, postSoundChange: () -> Unit) {
+        disableScene(scene, context, true, postSoundChange)
+    }
+
+    fun disableScene(scene: ScenePreference, context: Context?, showUi: Boolean, postSoundChange: () -> Unit) {
         context?.let {
             //get current system settings
             val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -80,7 +89,7 @@ object ServiceHelper {
 
             if (sMusic != null && sRing != null) {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, sRing.setMusicVolume, 0)
-                audioManager.setStreamVolume(AudioManager.STREAM_RING, sRing.setMusicVolume, AudioManager.FLAG_SHOW_UI)
+                audioManager.setStreamVolume(AudioManager.STREAM_RING, sRing.setMusicVolume, if (showUi) AudioManager.FLAG_SHOW_UI else 0)
 
                 postSoundChange()
             }

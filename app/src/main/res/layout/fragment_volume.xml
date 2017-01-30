@@ -268,7 +268,6 @@
                 style="@style/ElevatedLayout.NoEndMargin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/vertical_margin"
                 android:layout_marginTop="@dimen/vertical_margin"
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/vertical_margin"
@@ -277,7 +276,9 @@
                 android:paddingTop="@dimen/vertical_margin"
                 app:layout_constraintEnd_toEndOf="@+id/linearLayout"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/location_title">
+                app:layout_constraintTop_toBottomOf="@+id/location_title"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp">
 
                 <RelativeLayout
                     android:id="@+id/select_location_view"
@@ -329,24 +330,12 @@
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
                         android:layout_marginBottom="@dimen/vertical_margin"
-                        android:layout_marginEnd="16dp"
                         android:layout_toEndOf="@+id/current_location_label"
                         android:text="@string/current_location"
                         android:textAlignment="textStart"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@android:color/holo_blue_dark" />
 
                 </RelativeLayout>
-
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/location_button_edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_gravity="end"
-                    android:text="@string/edit"
-                    android:textColor="@color/colorPrimaryDark" />
-
 
             </LinearLayout>
 

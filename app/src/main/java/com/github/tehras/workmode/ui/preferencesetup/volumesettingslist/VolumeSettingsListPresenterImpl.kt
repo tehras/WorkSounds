@@ -1,6 +1,5 @@
 package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist
 
-import android.app.Activity
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.support.design.widget.FloatingActionButton
@@ -12,6 +11,7 @@ import com.github.tehras.workmode.services.PreferencesLocationService
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
 import com.github.tehras.workmode.ui.base.BaseActivity
+import com.github.tehras.workmode.ui.base.BaseFragment
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.listview.VolumeSettingsListAdapter
 import timber.log.Timber
 import java.util.*
@@ -31,7 +31,13 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
     override fun bindView(view: VolumeSettingsListView) {
         super.bindView(view)
 
-        helper = VolumeServiceInitHelper(preferences, (view as Fragment).activity as BaseActivity)
+        helper = VolumeServiceInitHelper(preferences, (view as Fragment).activity as BaseActivity, unregisterReceiver, registerReceiver)
+    }
+
+    override fun unbindView() {
+        super.unbindView()
+
+        helper?.unbind()
     }
 
     /**
@@ -51,9 +57,34 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
     val registerReceiver: (PreferencesLocationService, IntentFilter) -> Unit = {
         prefService, intentFilter ->
 
+        Timber.d("Trying to Register the Receiver - $view")
         view?.let {
-            if (it is Activity) {
-                it.registerReceiver(prefService, intentFilter)
+            val register: (BaseActivity) -> Unit = { activity ->
+                Timber.d("Registering the receiver in the Presenter")
+                activity.application.registerReceiver(prefService, intentFilter)
+            }
+            if (it is BaseActivity) {
+                register(it)
+            } else if (it is BaseFragment && it.activity is BaseActivity) {
+                register(it.activity as BaseActivity)
+            }
+        }
+    }
+
+    val unregisterReceiver: (PreferencesLocationService) -> Unit = {
+        prefService ->
+
+        view?.let {
+            val deregister: (BaseActivity) -> Unit = {
+                activity ->
+
+                activity.application.unregisterReceiver(prefService)
+            }
+
+            if (it is BaseActivity) {
+                deregister(it)
+            } else if (it is BaseFragment && it.activity is BaseActivity) {
+                deregister(it.activity as BaseActivity)
             }
         }
     }
@@ -63,7 +94,7 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         adapter?.update(volumeSettings(), editFunc, deleteFunc)
 
         helper?.unregisterFence()
-        helper?.registerFence(registerReceiver)
+        helper?.registerFence()
     }
 
     override fun initFab(new_scene: FloatingActionButton?) {
