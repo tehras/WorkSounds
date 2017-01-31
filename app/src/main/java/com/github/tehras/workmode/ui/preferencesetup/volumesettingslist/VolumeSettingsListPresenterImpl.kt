@@ -22,6 +22,7 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
     private var adapter: VolumeSettingsListAdapter? = null
     private val editFunc: (group: ScenePreference) -> Unit = { view?.edit(it) }
     private val deleteFunc: (group: ScenePreference) -> Unit = {
+        delete()
         ScenePreferenceSettings.deleteScene(it, preferences)
         view?.delete(it)
     }
@@ -31,7 +32,7 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
     override fun bindView(view: VolumeSettingsListView) {
         super.bindView(view)
 
-        helper = VolumeServiceInitHelper(preferences, (view as Fragment).activity as BaseActivity, unregisterReceiver, registerReceiver)
+        helper = VolumeServiceInitHelper(preferences, (view as Fragment).activity as BaseActivity, registerReceiver)
     }
 
     override fun unbindView() {
@@ -72,24 +73,6 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         }
     }
 
-    val unregisterReceiver: (PreferencesLocationService) -> Unit = {
-        prefService ->
-
-        view?.let {
-            val deregister: (BaseActivity) -> Unit = {
-                activity ->
-
-                activity.application.unregisterReceiver(prefService)
-            }
-
-            if (it is BaseActivity) {
-                deregister(it)
-            } else if (it is BaseFragment && it.activity is BaseActivity) {
-                deregister(it.activity as BaseActivity)
-            }
-        }
-    }
-
     override fun refreshAdapter() {
         Timber.d("refreshing adapter ${volumeSettings()}")
         adapter?.update(volumeSettings(), editFunc, deleteFunc)
@@ -101,6 +84,13 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         helper?.initialize()
         helper?.unregisterFence()
         helper?.registerFence()
+    }
+
+    private fun delete() {
+        helper?.initialize()
+        helper?.unregisterFence()
+        helper?.registerFence()
+
     }
 
     override fun initFab(new_scene: FloatingActionButton?) {

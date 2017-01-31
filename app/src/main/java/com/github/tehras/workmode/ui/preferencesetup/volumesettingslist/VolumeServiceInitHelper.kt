@@ -22,7 +22,7 @@ import timber.log.Timber
 import java.util.*
 
 
-class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: BaseActivity, val unregisterReceiver: (PreferencesLocationService) -> Unit, val registerReceiver: (PreferencesLocationService, IntentFilter) -> Unit) {
+class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: BaseActivity, val registerReceiver: (PreferencesLocationService, IntentFilter) -> Unit) {
 
     companion object {
         val DEFAULT_RADIUS = 200.toDouble() //this is in meters
