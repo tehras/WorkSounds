@@ -37,6 +37,7 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
     private var mGoogleApiClient: GoogleApiClient? = null
     private var mFencePendingIntent: PendingIntent? = null
     private var fenceReceiver: PreferencesLocationService? = null
+    private var initialized: Boolean = false
 
     init {
         initialize()
@@ -44,7 +45,7 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
 
     fun initialize() {
         val preferences = ScenePreferenceSettings.getAllScenes(preference = preferences)
-        if (preferences.isNotEmpty()) {
+        if (preferences.isNotEmpty() && !initialized) {
             //initialize
             mGoogleApiClient = GoogleApiClient.Builder(activity)
                     .addApi(Awareness.API)
@@ -60,6 +61,8 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
             fenceReceiver = PreferencesLocationService()
             Timber.d("Registering receiver")
             registerReceiver(fenceReceiver!!, IntentFilter(FENCE_RECEIVER_ACTION))
+
+            initialized = true
         }
     }
 
@@ -77,14 +80,14 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
             preferences.forEach {
                 Timber.d("locationEntering -> ${it.location?.location?.latitude}, ${it.location?.location?.longitude}")
 
-//                val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
+                val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
                 val locationEnteringFence = LocationFence.entering(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
                 val locationExitingFence = LocationFence.exiting(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
 
                 Awareness.FenceApi.updateFences(
                         mGoogleApiClient,
                         FenceUpdateRequest.Builder()
-//                                .addFence(createKey(it), locationFence, mFencePendingIntent)
+                                .addFence(createKey(it), locationFence, mFencePendingIntent)
                                 .addFence(createEntryKey(it), locationEnteringFence, mFencePendingIntent)
                                 .addFence(createExitKey(it), locationExitingFence, mFencePendingIntent)
                                 .build())
@@ -138,25 +141,23 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
 
         if (preferences.isNotEmpty()) {
             preferences.forEach { pref ->
-                mGoogleApiClient?.let {
-                    val key = createKey(pref)
-                    val entryKey = createEntryKey(pref)
-                    Awareness.FenceApi.updateFences(
-                            mGoogleApiClient,
-                            FenceUpdateRequest.Builder()
-                                    .removeFence(key)
-                                    .removeFence(entryKey)
-                                    .build())
-                            .setResultCallback(object : ResultCallbacks<Status>() {
-                                override fun onSuccess(status: Status) {
-                                    Timber.d("Fence $key and $entryKey successfully removed.")
-                                }
+                val key = createKey(pref)
+                val entryKey = createEntryKey(pref)
+                Awareness.FenceApi.updateFences(
+                        mGoogleApiClient,
+                        FenceUpdateRequest.Builder()
+                                .removeFence(key)
+                                .removeFence(entryKey)
+                                .build())
+                        .setResultCallback(object : ResultCallbacks<Status>() {
+                            override fun onSuccess(status: Status) {
+                                Timber.d("Fence $key and $entryKey successfully removed.")
+                            }
 
-                                override fun onFailure(status: Status) {
-                                    Timber.d("Fence $key and $entryKey could NOT be removed.")
-                                }
-                            })
-                }
+                            override fun onFailure(status: Status) {
+                                Timber.d("Fence $key and $entryKey could NOT be removed.")
+                            }
+                        })
             }
         }
     }

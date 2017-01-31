@@ -47,9 +47,10 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         Timber.d("obtainAdapter")
         val setting = volumeSettings()
 
-        if (adapter == null)
+        if (adapter == null) {
             adapter = VolumeSettingsListAdapter(setting, editFunc, deleteFunc)
-        else
+            startServices()
+        } else
             refreshAdapter()
         return adapter
     }
@@ -93,6 +94,11 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         Timber.d("refreshing adapter ${volumeSettings()}")
         adapter?.update(volumeSettings(), editFunc, deleteFunc)
 
+        startServices()
+    }
+
+    private fun startServices() {
+        helper?.initialize()
         helper?.unregisterFence()
         helper?.registerFence()
     }
