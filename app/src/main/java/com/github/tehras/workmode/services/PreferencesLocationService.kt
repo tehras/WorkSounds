@@ -97,7 +97,7 @@ class PreferencesLocationService : BroadcastReceiver() {
                 }
             }
         } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_ENTRY_KEY, true)) {
-            logEvent(EventType.LOCATION_EVENT, "Fence event received - entering location -> ${fenceState.fenceKey}")
+            logEvent(EventType.LOCATION_EVENT, "Fence event received - entering location")
 
             Timber.d("Fence entered -> ${fenceState.fenceKey}")
             when (fenceState.currentState) {
@@ -113,7 +113,7 @@ class PreferencesLocationService : BroadcastReceiver() {
                 }
             }
         } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_EXIT_KEY, true)) {
-            logEvent(EventType.LOCATION_EVENT, "Fence event received - leaving location -> ${fenceState.fenceKey}")
+            logEvent(EventType.LOCATION_EVENT, "Fence event received - leaving location")
 
             Timber.d("Fence exited -> ${fenceState.fenceKey}")
             when (fenceState.currentState) {

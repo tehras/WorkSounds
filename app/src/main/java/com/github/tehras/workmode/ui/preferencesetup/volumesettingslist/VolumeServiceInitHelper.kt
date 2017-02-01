@@ -4,22 +4,17 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
-import android.provider.Settings.System.DATE_FORMAT
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.services.PreferencesLocationService
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.BaseActivity
 import com.google.android.gms.awareness.Awareness
-import com.google.android.gms.awareness.fence.FenceQueryRequest
-import com.google.android.gms.awareness.fence.FenceQueryResult
 import com.google.android.gms.awareness.fence.FenceUpdateRequest
 import com.google.android.gms.awareness.fence.LocationFence
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.common.api.ResultCallbacks
 import com.google.android.gms.common.api.Status
 import timber.log.Timber
-import java.util.*
 
 
 class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: BaseActivity, val registerReceiver: (PreferencesLocationService, IntentFilter) -> Unit) {
@@ -44,6 +39,8 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
     }
 
     fun initialize() {
+        Timber.d("initializing - $initialized")
+
         val preferences = ScenePreferenceSettings.getAllScenes(preference = preferences)
         if (preferences.isNotEmpty() && !initialized) {
             //initialize
@@ -99,29 +96,12 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
                             }
                         }
 
-                queryFence(createKey(it))
-                queryFence(createEntryKey(it))
-                queryFence(createExitKey(it))
-                queryFence("headphoneJack")
+//                queryFence(createKey(it))
+//                queryFence(createEntryKey(it))
+//                queryFence(createExitKey(it))
+//                queryFence("headphoneJack")
             }
         }
-    }
-
-    fun queryFence(fenceKey: String) {
-        Awareness.FenceApi.queryFences(mGoogleApiClient,
-                FenceQueryRequest.forFences(Arrays.asList(fenceKey)))
-                .setResultCallback(ResultCallback<FenceQueryResult> { fenceQueryResult ->
-                    if (!fenceQueryResult.status.isSuccess) {
-                        Timber.e("Could not query fence: " + fenceKey)
-                        return@ResultCallback
-                    }
-                    val map = fenceQueryResult.fenceStateMap
-                    map.fenceKeys.forEach { fenceKey ->
-                        val fenceState = map.getFenceState(fenceKey)
-                        Timber.i("Fence $fenceKey: ${fenceState.currentState}, was = ${fenceState.previousState}, lastUpdated = ${DATE_FORMAT.format(
-                                Date(fenceState.lastFenceUpdateTimeMillis))}")
-                    }
-                })
     }
 
     private fun createKey(it: ScenePreference): String {

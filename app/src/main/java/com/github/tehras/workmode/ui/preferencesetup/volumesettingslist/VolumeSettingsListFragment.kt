@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.extensions.addBottomPadding
 import com.github.tehras.workmode.extensions.defaultInit
 import com.github.tehras.workmode.extensions.setTextColor
 import com.github.tehras.workmode.models.scene.ScenePreference
@@ -44,6 +45,12 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
         graph.plus(VolumeFragmentModule(this)).injectTo(this)
     }
 
+    override fun onStart() {
+        super.onStart()
+
+        Timber.i("onStart")
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_settings_list, container, false)
     }
@@ -51,8 +58,11 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
     override fun onPresenterReady() {
         super.onPresenterReady()
 
+        Timber.i("onPresenterReady - $presenter")
+
         //start init
         fragment_setting_list_list_view.defaultInit()
+        fragment_setting_list_list_view.addBottomPadding(R.dimen.extra_bottom_padding)
         fragment_setting_list_list_view.adapter = presenter.obtainAdapter()
 
         presenter.initFab(new_scene)

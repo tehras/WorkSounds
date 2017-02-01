@@ -39,6 +39,8 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
     @CallSuper
     protected open fun onPresenterReady() {
         bindPresenter()
+
+        Timber.i("onPresenterReady")
     }
 
 //    override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -56,7 +58,7 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
     }
 
     private fun initLoader() {
-        Timber.d("initLoader")
+        Timber.i("initLoader")
         loaderManager.initLoader<T>(LOADER_ID, null, this)
     }
 
@@ -89,13 +91,12 @@ abstract class PresenterFragment<V : MvpView, T : Presenter<V>> : BaseFragment()
         if (!delivered) {
             onPresenterProvided(presenter)
             delivered = true
-
-            onPresenterReady()
         }
+        onPresenterReady()
     }
 
     private fun bindPresenter() {
-        Timber.d("bindPresenter")
+        Timber.i("bindPresenter")
         presenter.bindView(getViewLayer())
         firstLoad = false
     }

@@ -1,6 +1,7 @@
 package com.github.tehras.workmode.extensions
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.os.Build
 import android.support.annotation.ColorInt
@@ -27,7 +28,11 @@ fun ImageButton.setButtonColor(@IntegerRes color: Int) {
 
 fun RecyclerView.defaultInit() {
     this.setHasFixedSize(true)
-    this.layoutManager = LinearLayoutManager(this.context)
+    if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT)
+        this.layoutManager = LinearLayoutManager(this.context)
+    else {
+        this.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+    }
 }
 
 fun Snackbar.setTextColor(@ColorInt color: Int): Snackbar {

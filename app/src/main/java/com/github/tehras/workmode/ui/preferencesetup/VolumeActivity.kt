@@ -36,8 +36,8 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
         if (savedInstanceState == null) {
             //start first fragment
             VolumeSettingsListFragment().addFragment(this, list_fragment_container, false)
-            this.enterCircularReveal(root_view) //animate
         }
+        this.enterCircularReveal(root_view) //animate
     }
 
     fun onBackPressedIgnoreOverride() {
