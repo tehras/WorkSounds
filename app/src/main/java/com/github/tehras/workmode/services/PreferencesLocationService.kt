@@ -1,5 +1,6 @@
 package com.github.tehras.workmode.services
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -12,7 +13,10 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.support.v7.app.NotificationCompat
 import com.github.tehras.workmode.R
+import com.github.tehras.workmode.extensions.EventType
+import com.github.tehras.workmode.extensions.logEvent
 import com.github.tehras.workmode.models.scene.ScenePreference
+import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeServiceInitHelper.Companion.FENCE_RECEIVER_ACTION_ENTRY_KEY
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeServiceInitHelper.Companion.FENCE_RECEIVER_ACTION_EXIT_KEY
@@ -77,6 +81,8 @@ class PreferencesLocationService : BroadcastReceiver() {
             }
             clearNotification(context)
         } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_KEY, true)) {
+            logEvent(EventType.LOCATION_EVENT, "Fence event received - at location -> ${fenceState.fenceKey}")
+
             Timber.d("Fence entered -> ${fenceState.fenceKey}")
             when (fenceState.currentState) {
                 FenceState.TRUE -> {
@@ -91,6 +97,8 @@ class PreferencesLocationService : BroadcastReceiver() {
                 }
             }
         } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_ENTRY_KEY, true)) {
+            logEvent(EventType.LOCATION_EVENT, "Fence event received - entering location -> ${fenceState.fenceKey}")
+
             Timber.d("Fence entered -> ${fenceState.fenceKey}")
             when (fenceState.currentState) {
                 FenceState.TRUE -> {
@@ -105,6 +113,8 @@ class PreferencesLocationService : BroadcastReceiver() {
                 }
             }
         } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_EXIT_KEY, true)) {
+            logEvent(EventType.LOCATION_EVENT, "Fence event received - leaving location -> ${fenceState.fenceKey}")
+
             Timber.d("Fence exited -> ${fenceState.fenceKey}")
             when (fenceState.currentState) {
                 FenceState.TRUE -> {
@@ -131,17 +141,21 @@ class PreferencesLocationService : BroadcastReceiver() {
         scene?.let {
             ServiceHelper.enableScene(it, context, getPreferences(context), false) {
                 showNotification(context, it)
+                context?.soundUpdated()
             }
         }
     }
 
     private fun showNotification(context: Context?, scene: ScenePreference) {
+        logEvent(EventType.LOCATION_EVENT, "Showing Enter Location")
+
         context?.let {
             val builder = NotificationCompat.Builder(context)
                     .setSmallIcon(scene.selectedTile.blackTile)
                     .setContentTitle("Volume adjusted to ${convertToPercent(scene.inMediaVolume?.setMusicVolume ?: 0, scene.inMediaVolume?.maxMusicVolume ?: 0)}% media and ${convertToPercent(scene.inRingVolume?.setMusicVolume ?: 0, scene.inRingVolume?.maxMusicVolume ?: 0)}% ring")
                     .setContentText("${scene.name} Entered")
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setDefaults(Notification.DEFAULT_VIBRATE)
 
             val undoAction = android.support.v4.app.NotificationCompat.Action.Builder(R.drawable.ic_undo, "Undo", createPendingIntent(context, scene, false)).build()
             builder.addAction(undoAction)
@@ -162,6 +176,7 @@ class PreferencesLocationService : BroadcastReceiver() {
             mNotifyMgr.notify(NOTIFICATION_ID, builder.build())
         }
     }
+
 
     private fun createPendingIntent(context: Context?, scene: ScenePreference, leftScene: Boolean): PendingIntent? {
         context?.let {
@@ -204,13 +219,14 @@ class PreferencesLocationService : BroadcastReceiver() {
     }
 
     private fun showLeftNotification(context: Context?, scene: ScenePreference) {
+        logEvent(EventType.LOCATION_EVENT, "Showing Exiting Location")
         context?.let {
             val builder = NotificationCompat.Builder(context)
                     .setSmallIcon(scene.selectedTile.blackTile)
                     .setContentTitle("Volume adjusted to ${convertToPercent(scene.outMediaVolume?.setMusicVolume ?: 0, scene.outMediaVolume?.maxMusicVolume ?: 0)}% media and ${convertToPercent(scene.outRingVolume?.setMusicVolume ?: 0, scene.outRingVolume?.maxMusicVolume ?: 0)}% ring")
                     .setContentText("${scene.name} Left")
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-
+                    .setDefaults(Notification.DEFAULT_VIBRATE)
 
             val undoAction = android.support.v4.app.NotificationCompat.Action.Builder(R.drawable.ic_undo, "Undo", createPendingIntent(context, scene, true)).build()
             builder.addAction(undoAction)

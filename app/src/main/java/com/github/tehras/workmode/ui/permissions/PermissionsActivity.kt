@@ -86,6 +86,7 @@ class PermissionsActivity : AppCompatActivity() {
                         startListActivity()
                 } else {
                     //we really need this permission
+                    logError(Exception("Location Permission Not Accepting"))
                     Snackbar.make(this.getRootView(), "Location Permission is Required", Snackbar.LENGTH_LONG).show()
                 }
             }

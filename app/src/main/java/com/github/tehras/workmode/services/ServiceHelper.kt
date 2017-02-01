@@ -1,8 +1,10 @@
 package com.github.tehras.workmode.services
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.media.AudioManager
+import android.support.v4.content.LocalBroadcastManager
 import com.github.tehras.workmode.models.scene.AudioSetVolumePreference
 import com.github.tehras.workmode.models.scene.AudioSettings
 import com.github.tehras.workmode.models.scene.ScenePreference
@@ -12,6 +14,14 @@ import timber.log.Timber
 object ServiceHelper {
     fun enableScene(scene: ScenePreference, context: Context?, preference: SharedPreferences, postSoundChange: () -> Unit) {
         enableScene(scene, context, preference, true, postSoundChange)
+    }
+
+    // called to send data to Activity
+    fun Context.soundUpdated() {
+        Timber.d("broadcastActionChanged")
+        val intent = Intent(PreferenceBaseTileService.BROADCAST_ACTION_REFRESH)
+        val bm = LocalBroadcastManager.getInstance(this)
+        bm.sendBroadcast(intent)
     }
 
     fun enableScene(scene: ScenePreference, context: Context?, preference: SharedPreferences, showUi: Boolean, postSoundChange: () -> Unit) {

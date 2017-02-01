@@ -10,6 +10,7 @@ import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.addFragment
 import com.github.tehras.workmode.extensions.enterCircularReveal
 import com.github.tehras.workmode.extensions.getLastFragmentInStack
+import com.github.tehras.workmode.extensions.logError
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterActivity
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
@@ -80,6 +81,7 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
         try {
             this.startActivityForResult(Intent(PlacePicker.IntentBuilder().build(this)), WorkPresenterImpl.PLACE_PICKER_REQUEST)
         } catch (e: GooglePlayServicesRepairableException) {
+            logError(e)
             AlertDialog.Builder(this).setMessage("Google Play Services are required. Please download/update and try again")
                     .setPositiveButton("Download", { d, i ->
                         d.dismiss()

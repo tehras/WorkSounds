@@ -10,9 +10,12 @@ import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
 import android.support.v4.content.LocalBroadcastManager
 import android.widget.Toast
+import com.github.tehras.workmode.extensions.EventType
+import com.github.tehras.workmode.extensions.logEvent
 import com.github.tehras.workmode.models.scene.AudioSetVolumePreference
 import com.github.tehras.workmode.models.scene.AudioSettings
 import com.github.tehras.workmode.models.scene.ScenePreference
+import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.splashscreen.SplashScreen
 import timber.log.Timber
@@ -32,14 +35,6 @@ abstract class PreferenceBaseTileService : TileService() {
                 tileAddedOrStartListening()
             }
         }
-    }
-
-    // called to send data to Activity
-    fun soundUpdated() {
-        Timber.d("broadcastActionChanged")
-        val intent = Intent(BROADCAST_ACTION_REFRESH)
-        val bm = LocalBroadcastManager.getInstance(this)
-        bm.sendBroadcast(intent)
     }
 
     override fun onStopListening() {
@@ -66,6 +61,8 @@ abstract class PreferenceBaseTileService : TileService() {
             val scene = getCorrectScene()
 
             Timber.d("scene - $scene")
+            logEvent(EventType.TILE_EVENT, "Tile for ${this.javaClass.simpleName} Started Listening")
+
             if (scene != null) {
                 //set active or inactive
                 if (isCurrentlyEnabled(scene))
@@ -96,6 +93,8 @@ abstract class PreferenceBaseTileService : TileService() {
         val scene = getCorrectScene()
 
         Timber.d("onClick - $scene")
+
+        logEvent(EventType.TILE_EVENT, "Tile for ${this.javaClass.simpleName} Clicked")
 
         scene?.let {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {

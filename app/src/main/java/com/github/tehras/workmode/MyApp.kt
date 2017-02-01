@@ -1,6 +1,9 @@
 package com.github.tehras.workmode
 
 import android.app.Application
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.answers.Answers
+import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -14,6 +17,9 @@ class MyApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        Fabric.with(this, Crashlytics())
+        Fabric.with(this, Answers())
 
         initDependencyGraph()
 
