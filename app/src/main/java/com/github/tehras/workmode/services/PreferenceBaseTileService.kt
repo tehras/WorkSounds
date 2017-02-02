@@ -3,7 +3,6 @@ package com.github.tehras.workmode.services
 import android.app.NotificationManager
 import android.content.*
 import android.graphics.drawable.Icon
-import android.media.AudioManager
 import android.os.Build
 import android.preference.PreferenceManager
 import android.service.quicksettings.Tile
@@ -13,8 +12,8 @@ import android.support.v4.content.LocalBroadcastManager
 import android.widget.Toast
 import com.github.tehras.workmode.extensions.EventType
 import com.github.tehras.workmode.extensions.logEvent
-import com.github.tehras.workmode.models.scene.AudioSettings
 import com.github.tehras.workmode.models.scene.ScenePreference
+import com.github.tehras.workmode.services.ServiceHelper.isCurrentlyEnabled
 import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.splashscreen.SplashScreen
@@ -68,7 +67,7 @@ abstract class PreferenceBaseTileService : TileService() {
             if (scene != null) {
                 updateTile(scene)
                 //set active or inactive
-                if (isCurrentlyEnabled(scene))
+                if (isCurrentlyEnabled(this, scene))
                     qsTile.state = Tile.STATE_ACTIVE
                 else qsTile.state = Tile.STATE_INACTIVE
             } else {
@@ -124,7 +123,7 @@ abstract class PreferenceBaseTileService : TileService() {
                         Tile.STATE_ACTIVE -> {
                             Timber.d("activated")
                             ServiceHelper.disableScene(it, this) {
-
+                                soundUpdated()
                             }
                             qsTile.state = Tile.STATE_INACTIVE
                         }
@@ -155,22 +154,6 @@ abstract class PreferenceBaseTileService : TileService() {
 
     private fun startSplashScreen() {
         this.startActivity(android.content.Intent(this, SplashScreen::class.java)) //add extra
-    }
-
-    private fun isCurrentlyEnabled(scene: ScenePreference): Boolean {
-        //get current system settings
-        val audioManager: AudioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        //get sound quality
-        val music = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
-        val sound = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
-
-        val sMusic = scene.inMediaVolume
-        val sRing = scene.inRingVolume
-
-        Timber.d("isCurrentlyEnabled - ${sMusic?.setMusicVolume} and ${sRing?.setMusicVolume} = ${(sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)}")
-
-        return (sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)
     }
 
     private fun getPreferences(): SharedPreferences {

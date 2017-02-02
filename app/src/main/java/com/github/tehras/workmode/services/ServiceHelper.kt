@@ -1,12 +1,10 @@
 package com.github.tehras.workmode.services
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.os.Build
-import android.service.quicksettings.TileService
 import android.support.v4.content.LocalBroadcastManager
 import com.github.tehras.workmode.models.scene.AudioSetVolumePreference
 import com.github.tehras.workmode.models.scene.AudioSettings
@@ -103,15 +101,31 @@ object ServiceHelper {
             Timber.d("isCurrentlyEnabled - ${sMusic?.setMusicVolume} and ${sRing?.setMusicVolume}")
 
             if (sMusic != null && sRing != null) {
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, sRing.setMusicVolume, 0)
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, sMusic.setMusicVolume, 0)
                 audioManager.setStreamVolume(AudioManager.STREAM_RING, sRing.setMusicVolume, if (showUi) AudioManager.FLAG_SHOW_UI else 0)
 
                 postSoundChange()
-
             }
         }
 
     }
+
+    fun isCurrentlyEnabled(context: Context?, scene: ScenePreference): Boolean {
+        //get current system settings
+        val audioManager: AudioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        //get sound quality
+        val music = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
+        val sound = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
+
+        val sMusic = scene.inMediaVolume
+        val sRing = scene.inRingVolume
+
+        Timber.d("isCurrentlyEnabled - ${sMusic?.setMusicVolume} and ${sRing?.setMusicVolume} = ${(sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)}")
+
+        return (sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)
+    }
+
 
     private fun isTheSameVolume(currM: AudioSettings, currR: AudioSettings, music: AudioSettings, sound: AudioSettings): Boolean {
         return currM == music && currR == sound

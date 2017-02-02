@@ -54,8 +54,11 @@ class VolumeProgressLayout(context: Context?, attrs: AttributeSet?, defStyleAttr
             }
         }
 
-
-        view_volume_seek_bar.isEnabled = volEnabled
+        if (volEnabled) {
+            view_volume_seek_bar.setOnTouchListener(null)
+        } else {
+            view_volume_seek_bar.setOnTouchListener { view, motionEvent -> true }
+        }
     }
 
     fun getMaxVolume(): Int {

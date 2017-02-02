@@ -111,7 +111,7 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
     }
 
     private fun createExitKey(it: ScenePreference): String {
-        return "${FENCE_RECEIVER_ACTION_ENTRY_KEY}_${it.id}"
+        return "${FENCE_RECEIVER_ACTION_EXIT_KEY}_${it.id}"
     }
 
     fun unregisterFence() {
