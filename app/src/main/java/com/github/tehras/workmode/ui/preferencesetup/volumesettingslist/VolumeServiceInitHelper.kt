@@ -6,6 +6,7 @@ import android.content.IntentFilter
 import android.content.SharedPreferences
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.services.PreferencesLocationService
+import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.BaseActivity
 import com.google.android.gms.awareness.Awareness
@@ -74,7 +75,7 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
         val preferences = ScenePreferenceSettings.getAllScenes(preference = preferences)
 
         if (preferences.isNotEmpty()) {
-            preferences.forEach {
+            preferences.forEachIndexed { i, it ->
                 Timber.d("locationEntering -> ${it.location?.location?.latitude}, ${it.location?.location?.longitude}")
 
                 val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
@@ -95,12 +96,9 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
                                 Timber.d("Fence could not be registered: " + status)
                             }
                         }
-
-//                queryFence(createKey(it))
-//                queryFence(createEntryKey(it))
-//                queryFence(createExitKey(it))
-//                queryFence("headphoneJack")
             }
+
+            activity.soundUpdated()
         }
     }
 

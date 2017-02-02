@@ -12,7 +12,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
-import android.view.View
+import android.view.ViewTreeObserver
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.*
 import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
@@ -38,26 +38,41 @@ class PermissionsActivity : AppCompatActivity() {
             }
             help_text.text = this.resources.getText(R.string.location_help_text)
             location_icon.setImageResource(R.drawable.ic_location)
+
+            animateIn(true)
         } else if (needsNotificationPermissions()) {
-            showNeedsNotificationPermissionsLayout()
+            showNeedsNotificationPermissionsLayout(true)
         } else {
             startListActivity()
         }
 
     }
 
-    private fun showNeedsNotificationPermissionsLayout() {
+    private fun showNeedsNotificationPermissionsLayout(firstLoad: Boolean) {
         location_enable_button.setOnClickListener {
             showEnableNotificationsScreen()
         }
         help_text.text = this.resources.getText(R.string.dnd_explanation)
         location_icon.setImageResource(R.drawable.ic_dnd)
-        location_icon.addOnLayoutChangeListener(object : View.OnLayoutChangeListener {
-            override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {
-                location_icon.removeOnLayoutChangeListener(this)
-                location_icon.circularReveal()
-            }
-        })
+
+        animateIn(firstLoad)
+    }
+
+    private fun animateIn(firstLoad: Boolean) {
+        val reveal: () -> Unit = { location_icon.circularReveal() }
+
+        if (firstLoad) {
+            location_icon.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    reveal()
+                    location_icon.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+        } else {
+            reveal()
+        }
+        location_enable_button.animateFromBottom()
+        help_text.animateFromRight()
     }
 
     private fun needsNotificationPermissions(): Boolean {
@@ -81,7 +96,7 @@ class PermissionsActivity : AppCompatActivity() {
                 // If request is canceled, the result arrays are empty
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (needsNotificationPermissions()) {
-                        showNeedsNotificationPermissionsLayout()
+                        showNeedsNotificationPermissionsLayout(false)
                     } else
                         startListActivity()
                 } else {

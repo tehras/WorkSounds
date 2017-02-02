@@ -13,3 +13,17 @@ fun View.circularReveal() {
 
     circularReveal.start()
 }
+
+fun View.animateFromRight() {
+    val width = this.width
+    this.translationX = width.toFloat()
+
+    this.animate().translationXBy(-width.toFloat()).start()
+}
+
+fun View.animateFromBottom() {
+    val height = this.height
+    this.translationY = height.toFloat()
+
+    this.animate().translationYBy(-height.toFloat()).start()
+}

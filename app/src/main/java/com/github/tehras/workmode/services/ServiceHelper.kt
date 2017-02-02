@@ -1,9 +1,12 @@
 package com.github.tehras.workmode.services
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.AudioManager
+import android.os.Build
+import android.service.quicksettings.TileService
 import android.support.v4.content.LocalBroadcastManager
 import com.github.tehras.workmode.models.scene.AudioSetVolumePreference
 import com.github.tehras.workmode.models.scene.AudioSettings
@@ -19,9 +22,11 @@ object ServiceHelper {
     // called to send data to Activity
     fun Context.soundUpdated() {
         Timber.d("broadcastActionChanged")
-        val intent = Intent(PreferenceBaseTileService.BROADCAST_ACTION_REFRESH)
-        val bm = LocalBroadcastManager.getInstance(this)
-        bm.sendBroadcast(intent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val intent = Intent(PreferenceBaseTileService.BROADCAST_ACTION_REFRESH)
+            val bm = LocalBroadcastManager.getInstance(this)
+            bm.sendBroadcast(intent)
+        }
     }
 
     fun enableScene(scene: ScenePreference, context: Context?, preference: SharedPreferences, showUi: Boolean, postSoundChange: () -> Unit) {
@@ -102,6 +107,7 @@ object ServiceHelper {
                 audioManager.setStreamVolume(AudioManager.STREAM_RING, sRing.setMusicVolume, if (showUi) AudioManager.FLAG_SHOW_UI else 0)
 
                 postSoundChange()
+
             }
         }
 

@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import com.github.tehras.workmode.R
@@ -39,6 +40,9 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
     override fun setUpName(nameField: EditText?) {
         if (isEditLayout)
             nameField?.setText(scenePreference.name)
+
+        nameField?.setSingleLine(true)
+        nameField?.imeOptions = EditorInfo.IME_ACTION_DONE
         nameField?.addSimpleTextChangeListener {
             scenePreference.name = it
             view?.showNameNeedsToBeSelected(false)

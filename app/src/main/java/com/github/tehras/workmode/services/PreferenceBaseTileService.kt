@@ -8,11 +8,11 @@ import android.os.Build
 import android.preference.PreferenceManager
 import android.service.quicksettings.Tile
 import android.service.quicksettings.TileService
+import android.support.annotation.RequiresApi
 import android.support.v4.content.LocalBroadcastManager
 import android.widget.Toast
 import com.github.tehras.workmode.extensions.EventType
 import com.github.tehras.workmode.extensions.logEvent
-import com.github.tehras.workmode.models.scene.AudioSetVolumePreference
 import com.github.tehras.workmode.models.scene.AudioSettings
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
@@ -46,6 +46,7 @@ abstract class PreferenceBaseTileService : TileService() {
 
     override fun onStartListening() {
         super.onStartListening()
+        Timber.i("onStartListening")
 
         tileAddedOrStartListening()
 
@@ -54,6 +55,7 @@ abstract class PreferenceBaseTileService : TileService() {
         val bm = LocalBroadcastManager.getInstance(this)
         bm.registerReceiver(mBroadcastReceiver, filter)
     }
+
 
     private fun tileAddedOrStartListening() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -64,6 +66,7 @@ abstract class PreferenceBaseTileService : TileService() {
             logEvent(EventType.TILE_EVENT, "Tile for ${this.javaClass.simpleName} Started Listening")
 
             if (scene != null) {
+                updateTile(scene)
                 //set active or inactive
                 if (isCurrentlyEnabled(scene))
                     qsTile.state = Tile.STATE_ACTIVE
@@ -75,8 +78,19 @@ abstract class PreferenceBaseTileService : TileService() {
         }
     }
 
+    @RequiresApi(24)
+    private fun updateTile(scene: ScenePreference) {
+        if (qsTile == null)
+            requestListeningState(this, ComponentName(this, this.javaClass))
+        qsTile?.let {
+            qsTile.label = scene.name
+            qsTile.icon = Icon.createWithResource(this.applicationContext, scene.selectedTile.tile)
+        }
+    }
+
     override fun onTileAdded() {
         super.onTileAdded()
+        Timber.i("onTileAdded")
 
         tileAddedOrStartListening()
     }
@@ -86,6 +100,7 @@ abstract class PreferenceBaseTileService : TileService() {
     }
 
     abstract fun getScene(scenes: ArrayList<ScenePreference>): ScenePreference?
+
 
     override fun onClick() {
         super.onClick()
@@ -108,7 +123,9 @@ abstract class PreferenceBaseTileService : TileService() {
                     when (qsTile.state) {
                         Tile.STATE_ACTIVE -> {
                             Timber.d("activated")
-                            disableScene(it)
+                            ServiceHelper.disableScene(it, this) {
+
+                            }
                             qsTile.state = Tile.STATE_INACTIVE
                         }
                         Tile.STATE_INACTIVE -> {
@@ -124,8 +141,7 @@ abstract class PreferenceBaseTileService : TileService() {
                         }
                     }
 
-                    qsTile.label = scene.name
-                    qsTile.icon = Icon.createWithResource(this.applicationContext, it.selectedTile.tile)
+                    updateTile(scene)
 
                     qsTile.updateTile()
                 }
@@ -155,40 +171,6 @@ abstract class PreferenceBaseTileService : TileService() {
         Timber.d("isCurrentlyEnabled - ${sMusic?.setMusicVolume} and ${sRing?.setMusicVolume} = ${(sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)}")
 
         return (sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)
-    }
-
-    private fun disableScene(scene: ScenePreference) {
-        //get current system settings
-        val audioManager: AudioManager = this.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        //get sound quality
-        val music = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
-        val sound = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
-
-        var sMusic: AudioSettings? = null
-        var sRing: AudioSettings? = null
-
-        when (scene.outMediaPreferenceSelected) {
-            AudioSetVolumePreference.BACK_TO_PREVIOUS, AudioSetVolumePreference.CUSTOM -> {
-                sMusic = scene.outMediaVolume
-                sRing = scene.outRingVolume
-            }
-            AudioSetVolumePreference.DO_NOTHING -> {
-                sMusic = music
-                sRing = sound
-            }
-            else -> {
-                //leave as null
-            }
-        }
-
-        Timber.d("isCurrentlyEnabled - ${sMusic?.setMusicVolume} and ${sRing?.setMusicVolume}")
-
-        if (sMusic != null && sRing != null) {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, sRing.setMusicVolume, 0)
-            audioManager.setStreamVolume(AudioManager.STREAM_RING, sRing.setMusicVolume, AudioManager.FLAG_SHOW_UI)
-        }
-
     }
 
     private fun getPreferences(): SharedPreferences {
