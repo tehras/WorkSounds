@@ -92,12 +92,12 @@
             </intent-filter>
         </service>
 
-        <meta-data
-            android:name="com.google.android.awareness.API_KEY"
-            android:value="AIzaSyC1c4yy5OBHiO_H8nab24hTxN0s3jTgIh0"/>
         <!--<meta-data-->
         <!--android:name="com.google.android.awareness.API_KEY"-->
-        <!--android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY"/>-->
+        <!--android:value="AIzaSyC1c4yy5OBHiO_H8nab24hTxN0s3jTgIh0"/>-->
+        <meta-data
+            android:name="com.google.android.awareness.API_KEY"
+            android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY"/>
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
             android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY"/>
