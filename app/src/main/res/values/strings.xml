@@ -52,4 +52,7 @@
     <string name="location_help_text">This app requires Location Permission to work properly. We will not be tracking your location actively, and there will be no battery implications.</string>
     <string name="empty_text">No scenes added yet, please go ahead and start with your first one!</string>
     <string name="no_scenes_added_yet">No scenes added yet</string>
+    <string name="help_text">Do you have any suggestions? Please Let us know!</string>
+    <string name="suggest">Suggest</string>
+    <string name="help_icon">Help Icon</string>
 </resources>

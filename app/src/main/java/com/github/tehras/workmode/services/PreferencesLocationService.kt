@@ -20,7 +20,6 @@ import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeServiceInitHelper.Companion.FENCE_RECEIVER_ACTION_ENTRY_KEY
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeServiceInitHelper.Companion.FENCE_RECEIVER_ACTION_EXIT_KEY
-import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeServiceInitHelper.Companion.FENCE_RECEIVER_ACTION_KEY
 import com.github.tehras.workmode.ui.splashscreen.SplashScreen
 import com.google.android.gms.awareness.fence.FenceState
 import timber.log.Timber
@@ -80,22 +79,6 @@ class PreferencesLocationService : BroadcastReceiver() {
                 ServiceHelper.enableScene(it, context, getPreferences(context), false) {} //leave empty
             }
             clearNotification(context)
-        } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_KEY, true)) {
-            logEvent(EventType.LOCATION_EVENT, "Fence event received - at location -> ${fenceState.fenceKey}")
-
-            Timber.d("Fence entered -> ${fenceState.fenceKey}")
-            when (fenceState.currentState) {
-                FenceState.TRUE -> {
-                    Timber.d("Fence > Currently at work.")
-                    enableScene(getScene(fenceState.fenceKey.replace("${FENCE_RECEIVER_ACTION_KEY}_", ""), context), context = context)
-                }
-                FenceState.FALSE -> {
-                    Timber.d("Fence > Currently NOT at work.")
-                }
-                FenceState.UNKNOWN -> {
-                    Timber.d("Fence > Current Location UNKNOWN.")
-                }
-            }
         } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_ENTRY_KEY, true)) {
             logEvent(EventType.LOCATION_EVENT, "Fence event received - entering location")
 

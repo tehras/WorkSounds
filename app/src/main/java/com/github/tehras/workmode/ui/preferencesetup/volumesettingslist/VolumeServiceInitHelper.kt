@@ -10,6 +10,7 @@ import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.BaseActivity
 import com.google.android.gms.awareness.Awareness
+import com.google.android.gms.awareness.fence.AwarenessFence
 import com.google.android.gms.awareness.fence.FenceUpdateRequest
 import com.google.android.gms.awareness.fence.LocationFence
 import com.google.android.gms.common.api.GoogleApiClient
@@ -25,7 +26,6 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
         val DWELL_TIME_MILLIS = 30000.toLong() //30 seconds
 
         val FENCE_RECEIVER_ACTION = "com.github.tehras.workmode.locationreceiver"
-        val FENCE_RECEIVER_ACTION_KEY = "fence_receiver_key"
         val FENCE_RECEIVER_ACTION_ENTRY_KEY = "fence_receiver_entry_key"
         val FENCE_RECEIVER_ACTION_EXIT_KEY = "fence_receiver_exit_key"
     }
@@ -82,11 +82,13 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
                 val locationEnteringFence = LocationFence.entering(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
                 val locationExitingFence = LocationFence.exiting(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
 
+                val inOrEnteringFence = AwarenessFence.or(locationFence, locationEnteringFence)
+
                 Awareness.FenceApi.updateFences(
                         mGoogleApiClient,
                         FenceUpdateRequest.Builder()
-                                .addFence(createKey(it), locationFence, mFencePendingIntent)
-                                .addFence(createEntryKey(it), locationEnteringFence, mFencePendingIntent)
+//                                .addFence(createKey(it), locationFence, mFencePendingIntent)
+                                .addFence(createEntryKey(it), inOrEnteringFence, mFencePendingIntent)
                                 .addFence(createExitKey(it), locationExitingFence, mFencePendingIntent)
                                 .build())
                         .setResultCallback { status ->
@@ -102,10 +104,6 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
         }
     }
 
-    private fun createKey(it: ScenePreference): String {
-        return "${FENCE_RECEIVER_ACTION_KEY}_${it.id}"
-    }
-
     private fun createEntryKey(it: ScenePreference): String {
         return "${FENCE_RECEIVER_ACTION_ENTRY_KEY}_${it.id}"
     }
@@ -119,21 +117,21 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
 
         if (preferences.isNotEmpty()) {
             preferences.forEach { pref ->
-                val key = createKey(pref)
+                val exitKey = createExitKey(pref)
                 val entryKey = createEntryKey(pref)
                 Awareness.FenceApi.updateFences(
                         mGoogleApiClient,
                         FenceUpdateRequest.Builder()
-                                .removeFence(key)
+                                .removeFence(exitKey)
                                 .removeFence(entryKey)
                                 .build())
                         .setResultCallback(object : ResultCallbacks<Status>() {
                             override fun onSuccess(status: Status) {
-                                Timber.d("Fence $key and $entryKey successfully removed.")
+                                Timber.d("Fence $exitKey and $entryKey successfully removed.")
                             }
 
                             override fun onFailure(status: Status) {
-                                Timber.d("Fence $key and $entryKey could NOT be removed.")
+                                Timber.d("Fence $exitKey and $entryKey could NOT be removed.")
                             }
                         })
             }

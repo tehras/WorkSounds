@@ -14,6 +14,7 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
 
     private val VIEW_TYPE_DEFAULT_HOLD: Int = 0
     private val VIEW_TYPE_EMPTY: Int = 1
+    private val VIEW_TYPE_SUGGEST: Int = 2
 
     fun update(volumeSettings: ArrayList<ScenePreference>?, editFunc: (ScenePreference) -> Unit, deleteFunc: (ScenePreference) -> Unit) {
         this.volumeSettings = volumeSettings
@@ -28,7 +29,7 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
     }
 
     override fun getItemCount(): Int {
-        val size = getSize()
+        val size = getSize() + 1
 
         if (size == 0)
             return 1
