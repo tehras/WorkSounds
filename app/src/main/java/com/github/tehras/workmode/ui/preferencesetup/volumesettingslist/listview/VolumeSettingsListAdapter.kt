@@ -10,7 +10,8 @@ import java.util.*
 
 class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
                                 var editFunc: (group: ScenePreference) -> Unit,
-                                var deleteFunc: (group: ScenePreference) -> Unit) : RecyclerView.Adapter<AbstractViewHolder<ScenePreference>>() {
+                                var deleteFunc: (group: ScenePreference) -> Unit,
+                                var sendASuggestion: () -> Unit) : RecyclerView.Adapter<AbstractViewHolder<ScenePreference>>() {
 
     private val VIEW_TYPE_DEFAULT_HOLD: Int = 0
     private val VIEW_TYPE_EMPTY: Int = 1
@@ -44,12 +45,17 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
     override fun getItemViewType(position: Int): Int {
         val size = getSize()
 
-        if (size == 0) return VIEW_TYPE_EMPTY else return VIEW_TYPE_DEFAULT_HOLD
-//        return if ((position + 1) != itemCount) VIEW_TYPE_DEFAULT_HOLD else VIEW_TYPE_EMPTY
+        if (size == 0) return VIEW_TYPE_EMPTY
+        else if (position == itemCount - 1) {
+            return VIEW_TYPE_SUGGEST
+        } else {
+            return VIEW_TYPE_DEFAULT_HOLD
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<ScenePreference> {
         when (viewType) {
+            VIEW_TYPE_SUGGEST -> return VolumeSettingsSuggestion(parent.inflateLayoutFromParent(R.layout.volume_list_make_suggestion), sendASuggestion = sendASuggestion)
             VIEW_TYPE_EMPTY -> return VolumeSettingsEmptyViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_empty_text))
             else -> return VolumeSettingsViewHolder(parent.inflateLayoutFromParent(R.layout.volume_list_view_item), editFunc, deleteFunc, { notifyDataSetChanged() })
         }

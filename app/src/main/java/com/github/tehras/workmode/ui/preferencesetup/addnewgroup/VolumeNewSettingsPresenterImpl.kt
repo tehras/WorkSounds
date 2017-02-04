@@ -4,18 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
-import android.support.v7.widget.AppCompatButton
-import android.support.v7.widget.AppCompatRadioButton
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.*
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.github.tehras.workmode.R
-import com.github.tehras.workmode.extensions.addSimpleTextChangeListener
-import com.github.tehras.workmode.extensions.setButtonColor
+import com.github.tehras.workmode.extensions.*
 import com.github.tehras.workmode.models.scene.*
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
@@ -49,7 +47,52 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
         }
     }
 
-    override fun setUpInVolumeControls(linearLayout: LinearLayout?) {
+    override fun setUpVolumeControls(linearLayout: View?) {
+        linearLayout?.let {
+            val switch = it.findViewById(R.id.volume_enable_switch) as SwitchCompat?
+            val isEnabled = scenePreference.isVolumeEnabled()
+
+            switch?.isChecked = isEnabled
+
+            val inVolume = it.findViewById(R.id.volume_container) as LinearLayout?
+            val outVolume = it.findViewById(R.id.out_ring_volume_container) as LinearLayout?
+
+            if (isEnabled) {
+                inVolume?.visibility = View.VISIBLE
+                outVolume?.visibility = View.VISIBLE
+            } else {
+                inVolume?.visibility = View.GONE
+                outVolume?.visibility = View.GONE
+            }
+
+            switch?.setOnCheckedChangeListener { compoundButton, b ->
+                if (b) {
+                    view?.showAtLeastOneNonMandatoryField(false)
+                    initVolume(it.context)
+                    inVolume?.animateFromLeft()
+                    outVolume?.animateFromRight()
+                } else {
+                    inVolume?.animateOutToLeft()
+                    outVolume?.animateOutToRight()
+                    scenePreference.inMediaVolume = null
+                    scenePreference.inRingVolume = null
+                }
+            }
+
+            setUpInVolumeControls(inVolume)
+            setUpOutVolumeControls(outVolume)
+        }
+    }
+
+    private fun initVolume(context: Context) {
+        //get max
+        val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        scenePreference.inMediaVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0)
+        scenePreference.inRingVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), 0)
+    }
+
+    private fun setUpInVolumeControls(linearLayout: LinearLayout?) {
         //ring volume setup
         linearLayout?.let {
             val ringVolume = linearLayout.findViewById(R.id.ring_volume) as VolumeProgressLayout
@@ -63,19 +106,57 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
                 scenePreference.inRingVolume = AudioSettings(max, current)
             }
             if (isEditLayout) {
-                ringVolume.setVolumeLevel(scenePreference.inRingVolume?.setMusicVolume ?: 0, scenePreference.inRingVolume?.maxMusicVolume ?: 0)
-                mediaVolume.setVolumeLevel(scenePreference.inMediaVolume?.setMusicVolume ?: 0, scenePreference.inMediaVolume?.maxMusicVolume ?: 0)
-            } else {
-                //get max
-                val audioManager: AudioManager = ringVolume.context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-                scenePreference.inMediaVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0)
-                scenePreference.inRingVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), 0)
+                if (scenePreference.isVolumeEnabled()) {
+                    ringVolume.setVolumeLevel(scenePreference.inRingVolume?.setMusicVolume ?: 0, scenePreference.inRingVolume?.maxMusicVolume ?: 0)
+                    mediaVolume.setVolumeLevel(scenePreference.inMediaVolume?.setMusicVolume ?: 0, scenePreference.inMediaVolume?.maxMusicVolume ?: 0)
+                }
             }
         }
     }
 
-    override fun setUpOutVolumeControls(linearLayout: LinearLayout?) {
+    override fun setUpWiFiControls(wifiLayout: View?) {
+        wifiLayout?.let {
+            val switch = it.findViewById(R.id.wifi_switch_enable) as SwitchCompat
+            val layout = it.findViewById(R.id.wifi_container)
+
+            switch.setOnCheckedChangeListener { compoundButton, b ->
+                if (b) {
+                    view?.showAtLeastOneNonMandatoryField(false)
+                    layout.animateFromLeft()
+                } else layout.animateOutToLeft()
+
+                scenePreference.wifiEnabled = b
+            }
+
+            switch.isChecked = scenePreference.wifiEnabled
+
+            val clickable = it.findViewById(R.id.wifi_enable_disable_layout)
+
+            val icon = it.findViewById(R.id.wifi_enabled_disabled_image) as ImageView
+            val text = it.findViewById(R.id.wifi_enable_disable_description) as TextView
+
+            setWifi(!scenePreference.wifiState, icon, text)
+            clickable.setOnClickListener {
+                setWifi(scenePreference.wifiState, icon, text)
+
+                scenePreference.wifiState = !scenePreference.wifiState
+                Timber.d("scene wifi state changed to - ${scenePreference.wifiState}")
+            }
+        }
+    }
+
+    private fun setWifi(enabled: Boolean, icon: ImageView, text: TextView) {
+        if (!enabled) {
+            icon.setImageResource(R.drawable.ic_wifi)
+            text.text = text.resources.getString(R.string.enable_wifi)
+        } else {
+
+            icon.setImageResource(R.drawable.ic_wifi_off)
+            text.text = text.resources.getString(R.string.disable_wifi)
+        }
+    }
+
+    private fun setUpOutVolumeControls(linearLayout: LinearLayout?) {
         //ring volume setup
         linearLayout?.let {
             val radioDoNothing = linearLayout.findViewById(R.id.radio_group_do_nothing) as AppCompatRadioButton
@@ -190,6 +271,8 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             view?.showNameNeedsToBeSelected(true)
         } else if (scenePreference.location == null) {
             view?.showLocationNeedsToBeSelected(true)
+        } else if (!atLeastOneNonMandatoryFieldSelected()) {
+            view?.showAtLeastOneNonMandatoryField(true)
         } else {
             //save the request
             if (!isEditLayout)
@@ -201,6 +284,10 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             //notify view everything went through fine
             view?.notifySceneSubmitted()
         }
+    }
+
+    private fun atLeastOneNonMandatoryFieldSelected(): Boolean {
+        return scenePreference.wifiEnabled || scenePreference.isVolumeEnabled()
     }
 
     override fun setUpLocation(locationLayout: LinearLayout?) {

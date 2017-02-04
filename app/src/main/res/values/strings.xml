@@ -10,6 +10,7 @@
     <string name="work_tile_help_text">The settings below set the sound levels when the toggle is <b>ON</b>. Setting the toggle <b>OFF</b> will switch the sound volume back to the previous state.</string>
     <string name="update">Update</string>
     <string name="dnd_explanation">For this function to operate properly you must give it access to change the <b>Do Not Disturb</b> option.</string>
+    <string name="wifi_permission"><b>WiFi</b> permission is required for this function!</string>
     <string name="enable">Enable</string>
     <string name="skip">Skip</string>
     <string name="location_based">Location - Auto Locate</string>
@@ -52,7 +53,13 @@
     <string name="location_help_text">This app requires Location Permission to work properly. We will not be tracking your location actively, and there will be no battery implications.</string>
     <string name="empty_text">No scenes added yet, please go ahead and start with your first one!</string>
     <string name="no_scenes_added_yet">No scenes added yet</string>
-    <string name="help_text">Do you have any suggestions? Please Let us know!</string>
+    <string name="help_text">Do you have any suggestions? Please let us know!</string>
     <string name="suggest">Suggest</string>
     <string name="help_icon">Help Icon</string>
+    <string name="wifi_settings">When entering location, what WiFi status would you like?</string>
+    <string name="enable_compat">Enable</string>
+    <string name="enable_wifi">WiFi will be enabled</string>
+    <string name="disable_wifi">WiFi will be disabled</string>
+    <string name="wi_fi_settings">Wi-Fi Preferences</string>
+    <string name="profile_information_mandatory_fields">Profile Information (Mandatory Fields)</string>
 </resources>

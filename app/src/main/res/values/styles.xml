@@ -50,9 +50,9 @@
         <item name="android:windowBackground">@drawable/splashscreen</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="ScreenTextTop">
         <item name="android:textSize">20sp</item>
@@ -71,6 +71,10 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ListTextHeader.White">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="ListTextButton">
         <item name="android:paddingStart">@dimen/horizontal_margin</item>
         <item name="android:paddingEnd">@dimen/horizontal_margin</item>
@@ -86,7 +90,7 @@
     </style>
 
     <style name="ListTextButton.Action">
-        <item name="android:textColor">@android:color/holo_orange_dark</item>
+        <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textStyle">normal</item>
     </style>
 

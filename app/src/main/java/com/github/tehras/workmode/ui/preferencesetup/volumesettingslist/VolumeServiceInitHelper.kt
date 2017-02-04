@@ -10,7 +10,6 @@ import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.BaseActivity
 import com.google.android.gms.awareness.Awareness
-import com.google.android.gms.awareness.fence.AwarenessFence
 import com.google.android.gms.awareness.fence.FenceUpdateRequest
 import com.google.android.gms.awareness.fence.LocationFence
 import com.google.android.gms.common.api.GoogleApiClient
@@ -78,17 +77,19 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
             preferences.forEachIndexed { i, it ->
                 Timber.d("locationEntering -> ${it.location?.location?.latitude}, ${it.location?.location?.longitude}")
 
-                val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
+//                val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
                 val locationEnteringFence = LocationFence.entering(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
                 val locationExitingFence = LocationFence.exiting(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
 
-                val inOrEnteringFence = AwarenessFence.or(locationFence, locationEnteringFence)
+//                val headphonesFence = HeadphoneFence.pluggingIn()
+//                val inOrEnteringFence = AwarenessFence.or(locationFence, locationEnteringFence)
 
                 Awareness.FenceApi.updateFences(
                         mGoogleApiClient,
                         FenceUpdateRequest.Builder()
+//                                .addFence("HeadphonesFence", headphonesFence, mFencePendingIntent)
 //                                .addFence(createKey(it), locationFence, mFencePendingIntent)
-                                .addFence(createEntryKey(it), inOrEnteringFence, mFencePendingIntent)
+                                .addFence(createEntryKey(it), locationEnteringFence, mFencePendingIntent)
                                 .addFence(createExitKey(it), locationExitingFence, mFencePendingIntent)
                                 .build())
                         .setResultCallback { status ->
@@ -122,6 +123,7 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
                 Awareness.FenceApi.updateFences(
                         mGoogleApiClient,
                         FenceUpdateRequest.Builder()
+//                                .removeFence("HeadphonesFence")
                                 .removeFence(exitKey)
                                 .removeFence(entryKey)
                                 .build())

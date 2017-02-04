@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.github.tehras.workmode"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.github.tehras.workmode">
 
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
 
     <application
         android:name=".MyApp"
@@ -26,25 +30,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.work.WorkActivity"/>
+        <activity android:name=".ui.work.WorkActivity" />
         <activity
             android:name=".ui.preferencesetup.VolumeActivity"
             android:label="@string/title_activity_volume"
-            android:theme="@style/AppTheme.NoAnim"/>
+            android:theme="@style/AppTheme.NoAnim" />
         <activity
             android:name=".ui.splashscreen.SplashScreen"
             android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <receiver android:name=".services.PreferencesLocationService">
             <intent-filter>
-                <action android:name="android.intent.action.PRE_BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.FENCE_RECEIVER_ACTION"/>
+                <!--<action android:name="android.intent.action.PRE_BOOT_COMPLETED" />-->
+                <action android:name="android.intent.action.FENCE_RECEIVER_ACTION" />
             </intent-filter>
         </receiver>
 
@@ -54,7 +58,7 @@
             android:label="Scene 1"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 
@@ -64,7 +68,7 @@
             android:label="Scene 2"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 
@@ -74,7 +78,7 @@
             android:label="Scene 3"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 
@@ -84,7 +88,7 @@
             android:label="Scene 4"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action android:name="android.service.quicksettings.action.QS_TILE"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 
@@ -93,19 +97,19 @@
         <!--android:value="AIzaSyC1c4yy5OBHiO_H8nab24hTxN0s3jTgIh0"/>-->
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
-            android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY"/>
+            android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY" />
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY"/>
+            android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY"/>
+            android:value="AIzaSyAYboruIJplEUd3xXX8tlPOicdwR5RFZsY" />
 
-        <activity android:name=".ui.permissions.PermissionsActivity"/>
+        <activity android:name=".ui.permissions.PermissionsActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="d646f29b261ee750b37c14d2c2dcf7db986a9401"/>
+            android:value="d646f29b261ee750b37c14d2c2dcf7db986a9401" />
     </application>
 
 </manifest>

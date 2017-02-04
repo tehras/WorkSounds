@@ -79,6 +79,8 @@ class PreferencesLocationService : BroadcastReceiver() {
                 ServiceHelper.enableScene(it, context, getPreferences(context), false) {} //leave empty
             }
             clearNotification(context)
+        } else if (fenceState.fenceKey.equals("HeadphonesFence", true)) {
+            Timber.i("Headphones Plugged In - ${fenceState.currentState}")
         } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_ENTRY_KEY, true)) {
             logEvent(EventType.LOCATION_EVENT, "Fence event received - entering location")
 

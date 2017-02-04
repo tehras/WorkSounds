@@ -100,8 +100,8 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
 
         //horizontal chooser
         presenter.setUpHorizontalImagePicker(image_selector_list_view)
-        presenter.setUpInVolumeControls(linearLayout)
-        presenter.setUpOutVolumeControls(out_ring_volume_container)
+        presenter.setUpVolumeControls(view)
+        presenter.setUpWiFiControls(view)
         presenter.setUpButtonBar(cancel_button, create_button)
         presenter.setUpName(name_field)
         presenter.setUpLocation(location_layout)
@@ -139,6 +139,18 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
                 location_button_label.setTextColor(it.context.getColorDefault(R.color.errorRed))
             } else {
                 name_title.setTextColor(it.context.getColorDefault(android.R.color.black))
+            }
+        }
+    }
+
+    override fun showAtLeastOneNonMandatoryField(b: Boolean) {
+        view?.let {
+            if (b) {
+                Snackbar.make(it, "At least 1 preference must be enabled", Snackbar.LENGTH_LONG).setTextColor(Color.WHITE).show()
+
+                non_mandatory_fields.setTextColor(R.color.errorRed)
+            } else {
+                non_mandatory_fields.setTextColor(android.R.color.white)
             }
         }
     }

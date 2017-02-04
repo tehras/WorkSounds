@@ -1,9 +1,11 @@
 package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist
 
+import android.app.Activity
 import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
+import android.support.v4.app.ShareCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.github.tehras.workmode.models.scene.ScenePreference
@@ -18,6 +20,22 @@ import java.util.*
 import javax.inject.Inject
 
 class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: SharedPreferences) : AbstractPresenter<VolumeSettingsListView>(), VolumeSettingsListPresenter {
+
+    private var sendASuggestion: () -> Unit = {
+        ShareCompat.IntentBuilder.from(getActivity())
+                .setType("message/rfc822")
+                .addEmailTo("koshkinbrosdev@gmail.com")
+                .setSubject("Scenes - Suggestion")
+                .setText("")
+                .setChooserTitle("Email Client...")
+                .startChooser()
+    }
+
+    private fun getActivity(): Activity? {
+        if (view is Fragment) {
+            return (view as Fragment).activity
+        } else return null
+    }
 
     private var adapter: VolumeSettingsListAdapter? = null
     private val editFunc: (group: ScenePreference) -> Unit = { view?.edit(it) }
@@ -49,7 +67,7 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
         val setting = volumeSettings()
 
         if (adapter == null) {
-            adapter = VolumeSettingsListAdapter(setting, editFunc, deleteFunc)
+            adapter = VolumeSettingsListAdapter(setting, editFunc, deleteFunc, sendASuggestion)
             startServices()
         } else
             refreshAdapter()

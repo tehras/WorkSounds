@@ -11,4 +11,5 @@ interface VolumeNewSettingsView : MvpView {
     fun showLocationExisted(address: String?)
     fun showSelectLocation()
     fun showLocationNeedsToBeSelected(b: Boolean)
+    fun showAtLeastOneNonMandatoryField(b: Boolean)
 }

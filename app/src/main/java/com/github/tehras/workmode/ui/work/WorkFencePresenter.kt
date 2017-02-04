@@ -10,6 +10,7 @@ import com.github.tehras.workmode.ui.base.AbstractPresenter
 import com.github.tehras.workmode.ui.base.BaseActivity
 import com.google.android.gms.awareness.Awareness
 import com.google.android.gms.awareness.fence.FenceUpdateRequest
+import com.google.android.gms.awareness.fence.HeadphoneFence
 import com.google.android.gms.awareness.fence.LocationFence
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallbacks
@@ -50,6 +51,7 @@ open class WorkFencePresenter constructor(private var preferences: SharedPrefere
 
         val locationFence = LocationFence.`in`(location?.location?.latitude ?: 0.00, location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
         val locationEnteringFence = LocationFence.entering(location?.location?.latitude ?: 0.00, location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
+
 
         Awareness.FenceApi.updateFences(
                 mGoogleApiClient,

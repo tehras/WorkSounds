@@ -7,4 +7,8 @@
         </attr>
         <attr name="volume_enabled" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="DividerLayout">
+        <attr name="divider_text" format="string"/>
+    </declare-styleable>
 </resources>

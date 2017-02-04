@@ -29,6 +29,17 @@ class ScenePreference : Serializable {
     @SerializedName("selectedTile")
     var selectedTile: TileImage = TileImage.NONE
 
+    @SerializedName("wifiEnabled")
+    var wifiEnabled: Boolean = false
+    @SerializedName("wifiState")
+    var wifiState: Boolean = true
+    @SerializedName("wifiEnterState")
+    var wifiEnterState: Boolean = true
+
+    fun isVolumeEnabled(): Boolean {
+        return inMediaVolume != null && inRingVolume != null
+    }
+
     fun update(scene: ScenePreference) {
         this.name = scene.name
         this.inMediaVolume = scene.inMediaVolume
@@ -40,6 +51,9 @@ class ScenePreference : Serializable {
 
         this.location = scene.location
         this.selectedTile = scene.selectedTile
+
+        this.wifiEnabled = scene.wifiEnabled
+        this.wifiState = scene.wifiState
     }
 
     override fun equals(other: Any?): Boolean {
