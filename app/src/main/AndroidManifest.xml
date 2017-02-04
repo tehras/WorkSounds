@@ -43,7 +43,6 @@
 
         <receiver android:name=".services.PreferencesLocationService">
             <intent-filter>
-                <action android:name="android.intent.action.PRE_BOOT_COMPLETED"/>
                 <action android:name="android.intent.action.FENCE_RECEIVER_ACTION"/>
             </intent-filter>
         </receiver>
