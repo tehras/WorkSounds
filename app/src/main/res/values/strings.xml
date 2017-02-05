@@ -62,4 +62,7 @@
     <string name="disable_wifi">WiFi will be disabled</string>
     <string name="wi_fi_settings">Wi-Fi Preferences</string>
     <string name="profile_information_mandatory_fields">Profile Information (Mandatory Fields)</string>
+    <string name="show_notifications">Show Notifications</string>
+    <string name="settings">Settings</string>
+    <string name="location_range_meters">Location Range (Meters)</string>
 </resources>

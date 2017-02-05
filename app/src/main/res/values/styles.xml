@@ -71,6 +71,10 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ListTextButton.Black">
+        <item name="android:textColor">@color/primaryText</item>
+    </style>
+
     <style name="ListTextHeader.White">
         <item name="android:textColor">@android:color/white</item>
     </style>

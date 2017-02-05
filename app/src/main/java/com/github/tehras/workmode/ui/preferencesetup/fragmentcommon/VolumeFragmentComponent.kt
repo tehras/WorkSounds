@@ -2,6 +2,7 @@ package com.github.tehras.workmode.ui.preferencesetup.fragmentcommon
 
 import com.github.tehras.workmode.ui.FragmentScope
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
+import com.github.tehras.workmode.ui.preferencesetup.settings.VolumeSettingsFragment
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeSettingsListFragment
 import dagger.Subcomponent
 
@@ -11,5 +12,6 @@ interface VolumeFragmentComponent {
 
     fun injectTo(fragment: VolumeSettingsListFragment)
     fun injectTo(fragment: VolumeNewSettingsFragment)
+    fun injectTo(fragment: VolumeSettingsFragment)
 
 }

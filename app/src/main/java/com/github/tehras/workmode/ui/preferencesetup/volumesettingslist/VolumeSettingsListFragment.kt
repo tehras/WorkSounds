@@ -10,6 +10,7 @@ import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.addBottomPadding
 import com.github.tehras.workmode.extensions.defaultInit
+import com.github.tehras.workmode.extensions.rotateFullCircle
 import com.github.tehras.workmode.extensions.setTextColor
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterFragment
@@ -67,6 +68,15 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
         fragment_setting_list_list_view.adapter = presenter.obtainAdapter()
 
         presenter.initFab(new_scene)
+
+        volume_settings_icon.setOnClickListener {
+            it.rotateFullCircle { launchSettingsScreen() }
+        }
+    }
+
+    private fun launchSettingsScreen() {
+        if (activity is VolumeActivity)
+            (activity as VolumeActivity).launchSettingsScreen()
     }
 
     fun refreshListView() {

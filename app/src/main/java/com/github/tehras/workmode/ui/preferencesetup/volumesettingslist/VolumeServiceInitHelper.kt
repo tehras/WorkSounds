@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
+import com.github.tehras.workmode.models.generalsettings.getGeneralSettings
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.services.PreferencesLocationService
 import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
@@ -21,7 +22,6 @@ import timber.log.Timber
 class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: BaseActivity, val registerReceiver: (PreferencesLocationService, IntentFilter) -> Unit) {
 
     companion object {
-        val DEFAULT_RADIUS = 200.toDouble() //this is in meters
         val DWELL_TIME_MILLIS = 30000.toLong() //30 seconds
 
         val FENCE_RECEIVER_ACTION = "com.github.tehras.workmode.locationreceiver"
@@ -77,9 +77,10 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
             preferences.forEachIndexed { i, it ->
                 Timber.d("locationEntering -> ${it.location?.location?.latitude}, ${it.location?.location?.longitude}")
 
+                val radius = getGeneralSettings(preferences = this.preferences).locationRange.toDouble()
 //                val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
-                val locationEnteringFence = LocationFence.entering(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
-                val locationExitingFence = LocationFence.exiting(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS)
+                val locationEnteringFence = LocationFence.entering(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, radius)
+                val locationExitingFence = LocationFence.exiting(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, radius)
 
 //                val headphonesFence = HeadphoneFence.pluggingIn()
 //                val inOrEnteringFence = AwarenessFence.or(locationFence, locationEnteringFence)

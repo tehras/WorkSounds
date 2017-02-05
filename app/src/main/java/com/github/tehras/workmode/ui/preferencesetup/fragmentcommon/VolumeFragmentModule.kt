@@ -7,6 +7,8 @@ import com.github.tehras.workmode.ui.base.BaseFragment
 import com.github.tehras.workmode.ui.base.FragmentModule
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsPresenter
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsPresenterImpl
+import com.github.tehras.workmode.ui.preferencesetup.settings.VolumeSettingsPresenter
+import com.github.tehras.workmode.ui.preferencesetup.settings.VolumeSettingsPresenterImpl
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeSettingsListPresenter
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeSettingsListPresenterImpl
 import dagger.Module
@@ -20,6 +22,9 @@ class VolumeFragmentModule(fragment: BaseFragment) : FragmentModule(fragment = f
 
     @Provides @FragmentScope
     fun provideNewVolumePresenter(presenter: VolumeNewSettingsPresenterImpl): VolumeNewSettingsPresenter = presenter
+
+    @Provides @FragmentScope
+    fun provideVolumeSettingsPresenter(presenter: VolumeSettingsPresenterImpl): VolumeSettingsPresenter = presenter
 
     @Provides @FragmentScope
     fun provideSharedPreference(): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(fragment.activity.applicationContext)

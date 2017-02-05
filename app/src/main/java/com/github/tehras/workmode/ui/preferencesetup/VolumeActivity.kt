@@ -15,6 +15,7 @@ import com.github.tehras.workmode.extensions.logError
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterActivity
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
+import com.github.tehras.workmode.ui.preferencesetup.settings.VolumeSettingsFragment
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeSettingsListFragment
 import com.github.tehras.workmode.ui.work.WorkPresenterImpl
 import com.google.android.gms.common.GooglePlayServicesRepairableException
@@ -22,6 +23,7 @@ import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlacePicker
 import kotlinx.android.synthetic.main.activity_volume.*
 import kotlinx.android.synthetic.main.content_volume.*
+import kotlinx.android.synthetic.main.fragment_settings_list.*
 import timber.log.Timber
 
 class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeView {
@@ -66,6 +68,11 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
     fun showNewVolumeFragment(volumeGroup: ScenePreference?, view: View) {
         VolumeNewSettingsFragment.instance(volumeGroup, view).addFragment(this, new_scene_view_container, false)
     }
+
+    fun launchSettingsScreen() {
+        VolumeSettingsFragment.instance(volume_settings_icon).addFragment(this, new_scene_view_container, false)
+    }
+
 
     fun refreshScene() {
         supportFragmentManager.fragments.forEach {

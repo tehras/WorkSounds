@@ -5,6 +5,6 @@ import android.view.View
 
 abstract class AbstractViewHolder<in T>(view: View?) : RecyclerView.ViewHolder(view) {
 
-    abstract fun bindView(t: T?)
+    abstract fun bindView(t: T?, position: Int)
 
 }

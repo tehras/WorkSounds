@@ -27,7 +27,7 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<ScenePreference>?, position: Int) {
-        holder?.bindView(if (volumeSettings?.size ?: 0 > position) volumeSettings?.get(position) else null)
+        holder?.bindView(if (volumeSettings?.size ?: 0 > position) volumeSettings?.get(position) else null, position)
     }
 
     override fun getItemCount(): Int {

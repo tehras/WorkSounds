@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.view.View
 import android.view.ViewAnimationUtils
 import android.view.ViewPropertyAnimator
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 
 fun View.circularReveal() {
@@ -50,6 +51,10 @@ fun View.animateOutToRight() {
     this.translationX = 0.toFloat()
 
     this.animate().translationXBy(width.toFloat()).setGone(this).start()
+}
+
+fun View.rotateFullCircle(endAnimation: () -> Unit) {
+    this.animate().rotationBy(360.toFloat()).setInterpolator(AccelerateDecelerateInterpolator()).setListener(EzAnimatorListener({}, endAnimation)).start()
 }
 
 private fun ViewPropertyAnimator.setVisible(view: View): ViewPropertyAnimator {

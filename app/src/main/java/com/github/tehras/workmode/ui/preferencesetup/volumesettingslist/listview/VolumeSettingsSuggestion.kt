@@ -9,7 +9,7 @@ import com.github.tehras.workmode.ui.base.AbstractViewHolder
 
 
 class VolumeSettingsSuggestion(val view: View, val sendASuggestion: () -> Unit) : AbstractViewHolder<ScenePreference>(view) {
-    override fun bindView(t: ScenePreference?) {
+    override fun bindView(t: ScenePreference?, position: Int) {
         //scene doesn't matter here
         val button = (view.findViewById(R.id.submit_button) as AppCompatButton)
         button.setButtonColor(android.R.color.white)

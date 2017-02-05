@@ -17,8 +17,8 @@ import com.github.tehras.workmode.views.VolumeProgressLayout
 
 @Suppress("DEPRECATION")
 class VolumeSettingsViewHolder(var view: View?, var editFunc: (group: ScenePreference, view: View) -> Unit, var deleteFunc: (group: ScenePreference) -> Unit, var volumeAdjusted: () -> Unit) : AbstractViewHolder<ScenePreference>(view) {
-    override fun bindView(t: ScenePreference?) {
-        (view?.findViewById(R.id.volume_name) as TextView).text = t?.name ?: ""
+    override fun bindView(t: ScenePreference?, position: Int) {
+        (view?.findViewById(R.id.volume_name) as TextView).text = ("${t?.name} (Scene ${position + 1})")
         (view?.findViewById(R.id.ring_progress_bar) as VolumeProgressLayout).setVolumeLevel(t?.inRingVolume?.setMusicVolume ?: 0, t?.inRingVolume?.maxMusicVolume ?: 0)
         (view?.findViewById(R.id.media_progress_bar) as VolumeProgressLayout).setVolumeLevel(t?.inMediaVolume?.setMusicVolume ?: 0, t?.inMediaVolume?.maxMusicVolume ?: 0)
         (view?.findViewById(R.id.volume_image) as ImageView).setImageResource(t?.selectedTile?.blackTile ?: R.drawable.ic_work_tile)

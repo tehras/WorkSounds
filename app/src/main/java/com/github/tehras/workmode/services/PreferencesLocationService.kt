@@ -15,6 +15,7 @@ import android.support.v7.app.NotificationCompat
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.EventType
 import com.github.tehras.workmode.extensions.logEvent
+import com.github.tehras.workmode.models.generalsettings.getGeneralSettings
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
@@ -132,6 +133,10 @@ class PreferencesLocationService : BroadcastReceiver() {
     }
 
     private fun showNotification(context: Context?, scene: ScenePreference) {
+        if (!getGeneralSettings(getPreferences(context)).enableNotifications) {
+            return
+        }
+
         logEvent(EventType.LOCATION_EVENT, "Showing Enter Location")
 
         context?.let {
@@ -204,6 +209,10 @@ class PreferencesLocationService : BroadcastReceiver() {
     }
 
     private fun showLeftNotification(context: Context?, scene: ScenePreference) {
+        if (!getGeneralSettings(getPreferences(context)).enableNotifications) {
+            return
+        }
+
         logEvent(EventType.LOCATION_EVENT, "Showing Exiting Location")
         context?.let {
             val builder = NotificationCompat.Builder(context)
