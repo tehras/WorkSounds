@@ -38,7 +38,7 @@ class VolumeSettingsListPresenterImpl @Inject constructor(val preferences: Share
     }
 
     private var adapter: VolumeSettingsListAdapter? = null
-    private val editFunc: (group: ScenePreference) -> Unit = { view?.edit(it) }
+    private val editFunc: (group: ScenePreference, view: View) -> Unit = { group, v -> view?.edit(group, v) }
     private val deleteFunc: (group: ScenePreference) -> Unit = {
         delete()
         ScenePreferenceSettings.deleteScene(it, preferences)

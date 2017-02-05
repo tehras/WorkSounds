@@ -24,13 +24,13 @@ open class VolumeSettingsListFragment : PresenterFragment<VolumeSettingsListView
         Timber.d("add called")
         //start New Volume Settings Fragment
         if (activity is VolumeActivity)
-            (activity as VolumeActivity).showNewVolumeFragment(null)
+            (activity as VolumeActivity).showNewVolumeFragment(null, new_scene)
     }
 
-    override fun edit(group: ScenePreference) {
+    override fun edit(group: ScenePreference, animateView: View) {
         Timber.d("edit called")
         if (activity is VolumeActivity)
-            (activity as VolumeActivity).showNewVolumeFragment(group)
+            (activity as VolumeActivity).showNewVolumeFragment(group, animateView)
     }
 
     override fun delete(group: ScenePreference) {

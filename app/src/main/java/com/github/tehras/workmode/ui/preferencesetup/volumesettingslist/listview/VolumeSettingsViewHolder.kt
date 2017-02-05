@@ -16,7 +16,7 @@ import com.github.tehras.workmode.ui.base.AbstractViewHolder
 import com.github.tehras.workmode.views.VolumeProgressLayout
 
 @Suppress("DEPRECATION")
-class VolumeSettingsViewHolder(var view: View?, var editFunc: (group: ScenePreference) -> Unit, var deleteFunc: (group: ScenePreference) -> Unit, var volumeAdjusted: () -> Unit) : AbstractViewHolder<ScenePreference>(view) {
+class VolumeSettingsViewHolder(var view: View?, var editFunc: (group: ScenePreference, view: View) -> Unit, var deleteFunc: (group: ScenePreference) -> Unit, var volumeAdjusted: () -> Unit) : AbstractViewHolder<ScenePreference>(view) {
     override fun bindView(t: ScenePreference?) {
         (view?.findViewById(R.id.volume_name) as TextView).text = t?.name ?: ""
         (view?.findViewById(R.id.ring_progress_bar) as VolumeProgressLayout).setVolumeLevel(t?.inRingVolume?.setMusicVolume ?: 0, t?.inRingVolume?.maxMusicVolume ?: 0)
@@ -54,7 +54,7 @@ class VolumeSettingsViewHolder(var view: View?, var editFunc: (group: ScenePrefe
             (view?.findViewById(R.id.volume_enable_disable) as TextView).text = text
             (view?.findViewById(R.id.volume_enable_disable) as TextView).setOnClickListener { clickListener() }
 
-            (view?.findViewById(R.id.volume_edit) as View).setOnClickListener { editFunc(t) }
+            (view?.findViewById(R.id.volume_edit) as View).setOnClickListener { editFunc(t, view!!) }
             (view?.findViewById(R.id.volume_delete) as View).setOnClickListener { deleteFunc(t) }
         }
     }

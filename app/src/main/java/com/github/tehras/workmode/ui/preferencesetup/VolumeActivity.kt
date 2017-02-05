@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
+import android.view.View
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.addFragment
@@ -62,8 +63,8 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
         }
     }
 
-    fun showNewVolumeFragment(volumeGroup: ScenePreference?) {
-        VolumeNewSettingsFragment.instance(volumeGroup).addFragment(this, new_scene_view_container, true)
+    fun showNewVolumeFragment(volumeGroup: ScenePreference?, view: View) {
+        VolumeNewSettingsFragment.instance(volumeGroup, view).addFragment(this, new_scene_view_container, false)
     }
 
     fun refreshScene() {

@@ -21,6 +21,10 @@ fun View.centerY(): Int {
     return (this.top + this.bottom) / 2
 }
 
+fun View.radius(): Int {
+    return Math.max(this.width, this.height)
+}
+
 @Suppress("unused")
 fun Activity.getRootView(): View {
     return window.decorView.findViewById(android.R.id.content)

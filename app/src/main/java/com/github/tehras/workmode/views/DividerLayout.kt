@@ -32,6 +32,7 @@ class DividerLayout(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) 
         this.text = findViewById(R.id.divider_text) as TextView
 
         setBackgroundResource(R.color.colorPrimaryDark)
+        elevation = context?.resources?.getDimensionPixelSize(R.dimen.cardview_default_elevation)?.toFloat() ?: 8.toFloat()
 
         this.text.text = s
     }
@@ -45,4 +46,7 @@ class DividerLayout(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) 
         this.text.text = s
     }
 
+    fun getText(): CharSequence {
+        return this.text.text
+    }
 }

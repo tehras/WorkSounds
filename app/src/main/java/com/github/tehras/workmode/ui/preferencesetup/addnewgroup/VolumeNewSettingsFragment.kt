@@ -9,10 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.tehras.workmode.AppComponent
 import com.github.tehras.workmode.R
-import com.github.tehras.workmode.extensions.addToBundle
-import com.github.tehras.workmode.extensions.getColorDefault
-import com.github.tehras.workmode.extensions.setButtonColor
-import com.github.tehras.workmode.extensions.setTextColor
+import com.github.tehras.workmode.extensions.*
 import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.ui.base.PresenterFragment
 import com.github.tehras.workmode.ui.preferencesetup.VolumeActivity
@@ -27,6 +24,9 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
 
     var showedAlertMessage: Boolean = false
     var scene: ScenePreference? = null
+    var centerX: Int? = null
+    var centerY: Int? = null
+    var radius: Int? = null
 
     override fun showCancelDialog() {
         showedAlertMessage = true
@@ -60,12 +60,19 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
 
     companion object {
         val ARG_GROUP = "argument_group_settings"
+        val ARG_CENTER_X = "argument_center_x"
+        val ARG_CENTER_Y = "argument_center_y"
+        val ARG_RADIUS = "argument_radius"
 
-        fun instance(group: ScenePreference?): VolumeNewSettingsFragment {
+        fun instance(group: ScenePreference?, animateFrom: View): VolumeNewSettingsFragment {
             return VolumeNewSettingsFragment().addToBundle {
                 group?.let {
                     putSerializable(ARG_GROUP, it)
                 }
+
+                putInt(ARG_RADIUS, animateFrom.radius())
+                putInt(ARG_CENTER_X, animateFrom.centerX())
+                putInt(ARG_CENTER_Y, animateFrom.centerY())
             }
         }
     }
@@ -88,6 +95,9 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
 
     private fun restoreArgs(it: Bundle): Unit {
         scene = it.getSerializable(ARG_GROUP) as ScenePreference?
+        centerX = it.getInt(ARG_CENTER_X)
+        centerY = it.getInt(ARG_CENTER_Y)
+        radius = it.getInt(ARG_RADIUS)
     }
 
     override fun onPresenterReady() {
@@ -105,6 +115,11 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         presenter.setUpButtonBar(cancel_button, create_button)
         presenter.setUpName(name_field)
         presenter.setUpLocation(location_layout)
+
+        volume_scroll_view.setOnScrollChangeListener(VolumeNewListener(top_divider_title, mandatory_fields_divider, non_mandatory_fields))
+
+        //animate
+        overall_layout.circularReveal(centerX ?: 0, centerY ?: 0, radius ?: 0)
     }
 
     override fun showTileNeedsToBeSelected(b: Boolean) {

@@ -2,13 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overall_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:visibility="invisible"
+    tools:visibility="visible">
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/volume_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/volume_submit_button_bar">
@@ -135,10 +139,10 @@
                 style="@style/EditPageTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:layout_marginLeft="0dp"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
                 android:text="@string/volume_preferences"
                 app:layout_constraintLeft_toLeftOf="@+id/image_selector_list_view"
                 app:layout_constraintTop_toBottomOf="@+id/non_mandatory_fields" />
@@ -509,5 +513,11 @@
         </FrameLayout>
 
     </LinearLayout>
+
+    <com.github.tehras.workmode.views.DividerLayout
+        android:id="@+id/top_divider_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
 
 </RelativeLayout>

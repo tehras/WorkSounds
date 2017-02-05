@@ -1,6 +1,7 @@
 package com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.listview
 
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.view.ViewGroup
 import com.github.tehras.workmode.R
 import com.github.tehras.workmode.extensions.inflateLayoutFromParent
@@ -9,7 +10,7 @@ import com.github.tehras.workmode.ui.base.AbstractViewHolder
 import java.util.*
 
 class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
-                                var editFunc: (group: ScenePreference) -> Unit,
+                                var editFunc: (group: ScenePreference, view: View) -> Unit,
                                 var deleteFunc: (group: ScenePreference) -> Unit,
                                 var sendASuggestion: () -> Unit) : RecyclerView.Adapter<AbstractViewHolder<ScenePreference>>() {
 
@@ -17,7 +18,7 @@ class VolumeSettingsListAdapter(var volumeSettings: ArrayList<ScenePreference>?,
     private val VIEW_TYPE_EMPTY: Int = 1
     private val VIEW_TYPE_SUGGEST: Int = 2
 
-    fun update(volumeSettings: ArrayList<ScenePreference>?, editFunc: (ScenePreference) -> Unit, deleteFunc: (ScenePreference) -> Unit) {
+    fun update(volumeSettings: ArrayList<ScenePreference>?, editFunc: (ScenePreference, View) -> Unit, deleteFunc: (ScenePreference) -> Unit) {
         this.volumeSettings = volumeSettings
         this.editFunc = editFunc
         this.deleteFunc = deleteFunc

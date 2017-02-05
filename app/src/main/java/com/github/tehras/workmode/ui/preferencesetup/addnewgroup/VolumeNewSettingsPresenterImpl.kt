@@ -119,11 +119,18 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             val switch = it.findViewById(R.id.wifi_switch_enable) as SwitchCompat
             val layout = it.findViewById(R.id.wifi_container)
 
+            val showLayout: () -> Unit = { layout.animateFromLeft() }
+            val hideLayout: () -> Unit = { layout.animateOutToLeft() }
+
+            if (scenePreference.wifiEnabled) {
+                layout.visibility = View.VISIBLE
+            } else layout.visibility = View.GONE
+
             switch.setOnCheckedChangeListener { compoundButton, b ->
                 if (b) {
                     view?.showAtLeastOneNonMandatoryField(false)
-                    layout.animateFromLeft()
-                } else layout.animateOutToLeft()
+                    showLayout()
+                } else hideLayout()
 
                 scenePreference.wifiEnabled = b
             }
