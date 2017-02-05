@@ -22,9 +22,7 @@ import timber.log.Timber
 class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: BaseActivity, val registerReceiver: (PreferencesLocationService, IntentFilter) -> Unit) {
 
     companion object {
-        val DWELL_TIME_MILLIS = 30000.toLong() //30 seconds
-
-        val FENCE_RECEIVER_ACTION = "com.github.tehras.workmode.locationreceiver"
+        val FENCE_RECEIVER_ACTION = "com.github.tehras.workmode.locationreceiver.FENCE_RECEIVER_ACTION"
         val FENCE_RECEIVER_ACTION_ENTRY_KEY = "fence_receiver_entry_key"
         val FENCE_RECEIVER_ACTION_EXIT_KEY = "fence_receiver_exit_key"
     }
@@ -50,7 +48,7 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
             mGoogleApiClient?.connect()
 
             val intent = Intent(FENCE_RECEIVER_ACTION)
-            mFencePendingIntent = PendingIntent.getBroadcast(activity,
+            mFencePendingIntent = PendingIntent.getBroadcast(activity.applicationContext,
                     0,
                     intent,
                     0)
@@ -78,7 +76,9 @@ class VolumeServiceInitHelper(val preferences: SharedPreferences, val activity: 
                 Timber.d("locationEntering -> ${it.location?.location?.latitude}, ${it.location?.location?.longitude}")
 
                 val radius = getGeneralSettings(preferences = this.preferences).locationRange.toDouble()
-//                val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, DEFAULT_RADIUS, DWELL_TIME_MILLIS)
+                Timber.d("radius -> $radius")
+
+//                val locationFence = LocationFence.`in`(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, radius, DWELL_TIME_MILLIS)
                 val locationEnteringFence = LocationFence.entering(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, radius)
                 val locationExitingFence = LocationFence.exiting(it.location?.location?.latitude ?: 0.00, it.location?.location?.longitude ?: 0.00, radius)
 

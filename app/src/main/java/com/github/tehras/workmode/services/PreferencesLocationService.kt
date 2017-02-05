@@ -69,6 +69,7 @@ class PreferencesLocationService : BroadcastReceiver() {
             scene?.let {
                 ServiceHelper.disableScene(it, context) {} //leave empty
             }
+            context?.soundUpdated()
             clearNotification(context)
         } else if (NOTIFICATION_REPLY_FROM_LEFT.equals(intent?.action ?: "", true)) {
             Timber.d("Notification Reply")
@@ -79,6 +80,7 @@ class PreferencesLocationService : BroadcastReceiver() {
             scene?.let {
                 ServiceHelper.enableScene(it, context, getPreferences(context), false) {} //leave empty
             }
+            context?.soundUpdated()
             clearNotification(context)
         } else if (fenceState.fenceKey.equals("HeadphonesFence", true)) {
             Timber.i("Headphones Plugged In - ${fenceState.currentState}")
