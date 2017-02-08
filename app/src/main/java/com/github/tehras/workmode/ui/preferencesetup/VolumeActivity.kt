@@ -17,7 +17,6 @@ import com.github.tehras.workmode.ui.base.PresenterActivity
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.VolumeNewSettingsFragment
 import com.github.tehras.workmode.ui.preferencesetup.settings.VolumeSettingsFragment
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeSettingsListFragment
-import com.github.tehras.workmode.ui.work.WorkPresenterImpl
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlacePicker
@@ -27,6 +26,8 @@ import kotlinx.android.synthetic.main.fragment_settings_list.*
 import timber.log.Timber
 
 class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeView {
+    private val PLACE_PICKER_REQUEST: Int = 2001
+
     override fun injectDependencies(graph: AppComponent) {
         graph.plus(VolumeModule(this)).injectTo(this)
     }
@@ -87,7 +88,7 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
         this.saveLocation = saveLocation
 
         try {
-            this.startActivityForResult(Intent(PlacePicker.IntentBuilder().build(this)), WorkPresenterImpl.PLACE_PICKER_REQUEST)
+            this.startActivityForResult(Intent(PlacePicker.IntentBuilder().build(this)), PLACE_PICKER_REQUEST)
         } catch (e: GooglePlayServicesRepairableException) {
             logError(e)
             AlertDialog.Builder(this).setMessage("Google Play Services are required. Please download/update and try again")
@@ -109,7 +110,7 @@ class VolumeActivity : PresenterActivity<VolumeView, VolumePresenter>(), VolumeV
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Timber.d("onActivityResult $requestCode, $requestCode, $data")
-        if (requestCode === WorkPresenterImpl.PLACE_PICKER_REQUEST) {
+        if (requestCode === PLACE_PICKER_REQUEST) {
             if (resultCode === Activity.RESULT_OK || resultCode === Activity.RESULT_FIRST_USER) {
                 val selectedPlace = PlacePicker.getPlace(this, data)
                 Timber.d("selectedPlace - $selectedPlace")

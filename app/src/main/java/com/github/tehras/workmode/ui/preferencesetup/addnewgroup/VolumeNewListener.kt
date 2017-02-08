@@ -1,9 +1,20 @@
 package com.github.tehras.workmode.ui.preferencesetup.addnewgroup
 
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.ScrollView
 import com.github.tehras.workmode.views.DividerLayout
 
-class VolumeNewListener(val topDivider: DividerLayout, vararg val divider: DividerLayout?) : View.OnScrollChangeListener {
+class VolumeNewListener(val scrollView: ScrollView, val topDivider: DividerLayout, vararg val divider: DividerLayout?) : ViewTreeObserver.OnScrollChangedListener, View.OnScrollChangeListener {
+
+    var oldScrollY: Int = 0
+    var oldScrollX: Int = 0
+
+    override fun onScrollChanged() {
+        onScrollChange(scrollView, scrollView.scrollX, scrollView.scrollY, oldScrollX, oldScrollY)
+        oldScrollX = scrollView.scrollX
+        oldScrollY = scrollView.scrollY
+    }
 
     init {
         topDivider.setText(divider.first()?.getText() ?: "")

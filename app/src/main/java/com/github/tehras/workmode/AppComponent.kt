@@ -4,8 +4,6 @@ import com.github.tehras.workmode.ui.preferencesetup.VolumeComponent
 import com.github.tehras.workmode.ui.preferencesetup.VolumeModule
 import com.github.tehras.workmode.ui.preferencesetup.fragmentcommon.VolumeFragmentComponent
 import com.github.tehras.workmode.ui.preferencesetup.fragmentcommon.VolumeFragmentModule
-import com.github.tehras.workmode.ui.work.WorkComponent
-import com.github.tehras.workmode.ui.work.WorkModule
 import dagger.Component
 import javax.inject.Singleton
 
@@ -25,8 +23,6 @@ interface AppComponent {
     // fun plus(module: Module): ModuleComponent
 
     //    fun plus(homeLoanModule: HomeLoanModule): HomeLoanComponent
-    fun plus(workModule: WorkModule): WorkComponent
-
     fun plus(fragmentModule: VolumeFragmentModule): VolumeFragmentComponent
     fun plus(volumeModule: VolumeModule): VolumeComponent
 }

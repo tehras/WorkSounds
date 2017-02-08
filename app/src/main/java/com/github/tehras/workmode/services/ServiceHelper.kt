@@ -36,23 +36,22 @@ object ServiceHelper {
             //change settings
             Timber.d("enabling scene ${scene.name}")
 
-            if (scene.isVolumeEnabled()) {
-                val audioManager: AudioManager = it.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            var audioManager: AudioManager? = null
+            if (scene.isMediaEnabled() || scene.isRingEnabled())
+                audioManager = it.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
 
+
+            if (scene.isMediaEnabled()) {
                 //get sound quality
-                val currM = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
-                val currR = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
-
+                val currM = AudioSettings(audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
                 val music = scene.inMediaVolume
-                val sound = scene.inRingVolume
 
                 when (scene.outMediaPreferenceSelected) {
                     AudioSetVolumePreference.BACK_TO_PREVIOUS -> {
                         //record current settings
                         scene.outMediaVolume = currM
-                        scene.outRingVolume = currR
 
-                        Timber.d("volume saved - $currM and $currR")
+                        Timber.d("media saved - $currM")
                         //update Scene
                         ScenePreferenceSettings.updateScene(scene, preference)
                     }
@@ -61,15 +60,38 @@ object ServiceHelper {
                     }
                 }
 
-                Timber.d("enableWork save - $music and $sound")
+                Timber.d("enable media save - $music")
 
-                if (music != null && sound != null && !isTheSameVolume(currM, currR, music, sound)) {
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, music.setMusicVolume, 0)
-                    audioManager.setStreamVolume(AudioManager.STREAM_RING, sound.setMusicVolume, if (showUi) AudioManager.FLAG_SHOW_UI else 0)
-
-                    postSoundChange()
+                if (music != null && !isTheSameVolume(currM, music)) {
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, music.setMusicVolume, if (showUi && !scene.isRingEnabled()) AudioManager.FLAG_SHOW_UI else 0)
                 }
             }
+
+            if (scene.isRingEnabled()) {
+                val currR = AudioSettings(audioManager!!.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
+                val sound = scene.inRingVolume
+
+                when (scene.outMediaPreferenceSelected) {
+                    AudioSetVolumePreference.BACK_TO_PREVIOUS -> {
+                        //record current settings
+                        scene.outRingVolume = currR
+
+                        Timber.d("ring saved - $currR")
+                        //update Scene
+                        ScenePreferenceSettings.updateScene(scene, preference)
+                    }
+                    else -> {
+                        //do nothing
+                    }
+                }
+
+                Timber.d("enable ring save - $sound")
+
+                if (sound != null && !isTheSameVolume(currR, sound)) {
+                    audioManager.setStreamVolume(AudioManager.STREAM_RING, sound.setMusicVolume, if (showUi) AudioManager.FLAG_SHOW_UI else 0)
+                }
+            }
+
             if (scene.wifiEnabled) {
                 //wifi state
                 Timber.i("wifi is being ${scene.wifiState}")
@@ -79,6 +101,8 @@ object ServiceHelper {
 
                 wifiManager.isWifiEnabled = scene.wifiState
             }
+
+            postSoundChange()
         }
     }
 
@@ -88,38 +112,23 @@ object ServiceHelper {
 
     fun disableScene(scene: ScenePreference, context: Context?, showUi: Boolean, postSoundChange: () -> Unit) {
         context?.let {
-            if (scene.isVolumeEnabled()) {
-                //get current system settings
-                val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            var audioManager: AudioManager? = null
 
-                //get sound quality
-                val music = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
-                val sound = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
+            if (scene.isRingEnabled() || scene.isMediaEnabled())
+                audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
 
-                var sMusic: AudioSettings? = null
-                var sRing: AudioSettings? = null
+            if (scene.isMediaEnabled()) {
+                val sMusic: AudioSettings? = scene.outMediaVolume
 
-                when (scene.outMediaPreferenceSelected) {
-                    AudioSetVolumePreference.BACK_TO_PREVIOUS, AudioSetVolumePreference.CUSTOM -> {
-                        sMusic = scene.outMediaVolume
-                        sRing = scene.outRingVolume
-                    }
-                    AudioSetVolumePreference.DO_NOTHING -> {
-                        sMusic = music
-                        sRing = sound
-                    }
-                    else -> {
-                        //leave as null
-                    }
+                if (sMusic != null) {
+                    audioManager!!.setStreamVolume(AudioManager.STREAM_MUSIC, sMusic.setMusicVolume, if (showUi && !scene.isRingEnabled()) AudioManager.FLAG_SHOW_UI else 0)
                 }
+            }
+            if (scene.isRingEnabled()) {
+                val sRing: AudioSettings? = scene.outRingVolume
 
-                Timber.d("isCurrentlyEnabled - ${sMusic?.setMusicVolume} and ${sRing?.setMusicVolume}")
-
-                if (sMusic != null && sRing != null) {
-                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, sMusic.setMusicVolume, 0)
-                    audioManager.setStreamVolume(AudioManager.STREAM_RING, sRing.setMusicVolume, if (showUi) AudioManager.FLAG_SHOW_UI else 0)
-
-                    postSoundChange()
+                if (sRing != null) {
+                    audioManager!!.setStreamVolume(AudioManager.STREAM_RING, sRing.setMusicVolume, if (showUi) AudioManager.FLAG_SHOW_UI else 0)
                 }
             }
             if (scene.wifiEnabled) {
@@ -128,28 +137,35 @@ object ServiceHelper {
                 val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as WifiManager
                 wifiManager.isWifiEnabled = scene.wifiEnterState
             }
+
+            postSoundChange()
         }
 
     }
 
     fun isCurrentlyEnabled(context: Context?, scene: ScenePreference): Boolean {
-        var volumeMatched: Boolean = true
+        var ringMatched: Boolean = true
+        var mediaMatched: Boolean = true
         var wifiMatches: Boolean = true
 
-        if (scene.isVolumeEnabled()) {
-            //get current system settings
-            val audioManager: AudioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        var audioManager: AudioManager? = null
+        if (scene.isRingEnabled() || scene.isMediaEnabled())
+            audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
-            //get sound quality
-            val music = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
-            val sound = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
 
+        if (scene.isMediaEnabled()) {
+            val music = AudioSettings(audioManager!!.getStreamMaxVolume(AudioManager.STREAM_MUSIC), audioManager.getStreamVolume(AudioManager.STREAM_MUSIC))
             val sMusic = scene.inMediaVolume
+
+            mediaMatched = (sMusic?.setMusicVolume == music.setMusicVolume)
+        }
+
+        if (scene.isRingEnabled()) {
+            //get sound quality
+            val sound = AudioSettings(audioManager!!.getStreamMaxVolume(AudioManager.STREAM_RING), audioManager.getStreamVolume(AudioManager.STREAM_RING))
             val sRing = scene.inRingVolume
 
-            Timber.d("isCurrentlyEnabled - ${sMusic?.setMusicVolume} and ${sRing?.setMusicVolume} = ${(sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)}")
-
-            volumeMatched = (sMusic?.setMusicVolume == music.setMusicVolume) && (sRing?.setMusicVolume == sound.setMusicVolume)
+            ringMatched = (sRing?.setMusicVolume == sound.setMusicVolume)
         }
 
         if (scene.wifiEnabled) {
@@ -158,11 +174,11 @@ object ServiceHelper {
             wifiMatches = wifiManager.isWifiEnabled == scene.wifiState
         }
 
-        return volumeMatched && wifiMatches
+        return ringMatched && mediaMatched && wifiMatches
     }
 
 
-    private fun isTheSameVolume(currM: AudioSettings, currR: AudioSettings, music: AudioSettings, sound: AudioSettings): Boolean {
-        return currM == music && currR == sound
+    private fun isTheSameVolume(curr: AudioSettings, setting: AudioSettings): Boolean {
+        return curr == setting
     }
 }

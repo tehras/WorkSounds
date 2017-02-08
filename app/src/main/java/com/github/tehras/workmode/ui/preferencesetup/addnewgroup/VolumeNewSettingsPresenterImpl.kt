@@ -4,17 +4,25 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
-import android.support.v7.widget.*
+import android.support.v7.widget.AppCompatButton
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SwitchCompat
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.github.tehras.workmode.R
-import com.github.tehras.workmode.extensions.*
-import com.github.tehras.workmode.models.scene.*
+import com.github.tehras.workmode.extensions.addSimpleTextChangeListener
+import com.github.tehras.workmode.extensions.animateFromLeft
+import com.github.tehras.workmode.extensions.animateOutToLeft
+import com.github.tehras.workmode.extensions.setButtonColor
+import com.github.tehras.workmode.models.scene.AudioSettings
+import com.github.tehras.workmode.models.scene.ScenePreference
+import com.github.tehras.workmode.models.scene.TileImage
+import com.github.tehras.workmode.models.scene.VolumePlace
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.base.AbstractPresenter
 import com.github.tehras.workmode.ui.preferencesetup.addnewgroup.adapter.ImagePickerAdapter
@@ -49,66 +57,89 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
 
     override fun setUpVolumeControls(linearLayout: View?) {
         linearLayout?.let {
-            val switch = it.findViewById(R.id.volume_enable_switch) as SwitchCompat?
-            val isEnabled = scenePreference.isVolumeEnabled()
+            val ringSwitch = it.findViewById(R.id.volume_enable_switch) as SwitchCompat?
+            val mediaSwitch = it.findViewById(R.id.media_enable_switch) as SwitchCompat?
 
-            switch?.isChecked = isEnabled
+            val ringEnabled = scenePreference.isRingEnabled()
+            val mediaEnabled = scenePreference.isMediaEnabled()
 
-            val inVolume = it.findViewById(R.id.volume_container) as LinearLayout?
-            val outVolume = it.findViewById(R.id.out_ring_volume_container) as LinearLayout?
+            ringSwitch?.isChecked = ringEnabled
+            mediaSwitch?.isChecked = mediaEnabled
 
-            if (isEnabled) {
-                inVolume?.visibility = View.VISIBLE
-                outVolume?.visibility = View.VISIBLE
-            } else {
-                inVolume?.visibility = View.GONE
-                outVolume?.visibility = View.GONE
-            }
+            val inRing = it.findViewById(R.id.volume_container) as LinearLayout?
+            val inMedia = it.findViewById(R.id.media_container) as LinearLayout?
 
-            switch?.setOnCheckedChangeListener { compoundButton, b ->
+            if (ringEnabled) inRing?.visibility = View.VISIBLE else inRing?.visibility = View.GONE
+            if (mediaEnabled) inRing?.visibility = View.VISIBLE else inRing?.visibility = View.GONE
+
+            ringSwitch?.setOnCheckedChangeListener { compoundButton, b ->
                 if (b) {
                     view?.showAtLeastOneNonMandatoryField(false)
-                    initVolume(it.context)
-                    inVolume?.animateFromLeft()
-                    outVolume?.animateFromRight()
+                    initRing(it.context)
+                    inRing?.animateFromLeft()
                 } else {
-                    inVolume?.animateOutToLeft()
-                    outVolume?.animateOutToRight()
-                    scenePreference.inMediaVolume = null
+                    inRing?.animateOutToLeft()
                     scenePreference.inRingVolume = null
                 }
             }
+            mediaSwitch?.setOnCheckedChangeListener { compoundButton, b ->
+                if (b) {
+                    view?.showAtLeastOneNonMandatoryField(false)
+                    initMedia(it.context)
+                    inMedia?.animateFromLeft()
+                } else {
+                    inMedia?.animateOutToLeft()
+                    scenePreference.inMediaVolume = null
+                }
+            }
 
-            setUpInVolumeControls(inVolume)
-            setUpOutVolumeControls(outVolume)
+            setUpRingVolume(inRing)
+            setUpMediaVolume(inMedia)
         }
     }
 
-    private fun initVolume(context: Context) {
+    private fun initRing(context: Context) {
+        //get max
+        val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        scenePreference.inRingVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), 0)
+    }
+
+    private fun initMedia(context: Context) {
         //get max
         val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         scenePreference.inMediaVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0)
-        scenePreference.inRingVolume = AudioSettings(audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), 0)
     }
 
-    private fun setUpInVolumeControls(linearLayout: LinearLayout?) {
+    private fun setUpRingVolume(linearLayout: LinearLayout?) {
         //ring volume setup
         linearLayout?.let {
             val ringVolume = linearLayout.findViewById(R.id.ring_volume) as VolumeProgressLayout
+
+            ringVolume.onProgressChangeListener { current, max ->
+                scenePreference.inRingVolume = AudioSettings(max, current)
+            }
+            if (isEditLayout) {
+                if (scenePreference.isRingEnabled()) {
+                    ringVolume.setVolumeLevel(scenePreference.inRingVolume?.setMusicVolume ?: 0, scenePreference.inRingVolume?.maxMusicVolume ?: 0)
+                }
+            }
+        }
+    }
+
+    private fun setUpMediaVolume(linearLayout: LinearLayout?) {
+        //ring volume setup
+        linearLayout?.let {
             val mediaVolume = linearLayout.findViewById(R.id.media_volume) as VolumeProgressLayout
 
             //media volume setup
             mediaVolume.onProgressChangeListener { current, max ->
                 scenePreference.inMediaVolume = AudioSettings(max, current)
             }
-            ringVolume.onProgressChangeListener { current, max ->
-                scenePreference.inRingVolume = AudioSettings(max, current)
-            }
             if (isEditLayout) {
-                if (scenePreference.isVolumeEnabled()) {
-                    ringVolume.setVolumeLevel(scenePreference.inRingVolume?.setMusicVolume ?: 0, scenePreference.inRingVolume?.maxMusicVolume ?: 0)
-                    mediaVolume.setVolumeLevel(scenePreference.inMediaVolume?.setMusicVolume ?: 0, scenePreference.inMediaVolume?.maxMusicVolume ?: 0)
+                if (scenePreference.isMediaEnabled()) {
+                    mediaVolume.setVolumeLevel(scenePreference.inRingVolume?.setMusicVolume ?: 0, scenePreference.inRingVolume?.maxMusicVolume ?: 0)
                 }
             }
         }
@@ -163,86 +194,6 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
         }
     }
 
-    private fun setUpOutVolumeControls(linearLayout: LinearLayout?) {
-        //ring volume setup
-        linearLayout?.let {
-            val radioDoNothing = linearLayout.findViewById(R.id.radio_group_do_nothing) as AppCompatRadioButton
-            val radioDoPrevious = linearLayout.findViewById(R.id.radio_go_back_to_previous) as AppCompatRadioButton
-            val radioSetCustom = linearLayout.findViewById(R.id.radio_set_custom) as AppCompatRadioButton
-            val ringVolume = linearLayout.findViewById(R.id.custom_ring_volume) as VolumeProgressLayout
-            val mediaVolume = linearLayout.findViewById(R.id.custom_media_volume) as VolumeProgressLayout
-
-            val updatePreference = { preference: AudioSetVolumePreference -> updateSelectedPreference(preference, ringVolume, mediaVolume, radioDoNothing, radioDoPrevious, radioSetCustom) }
-
-            if (isEditLayout) {
-                updatePreference(scenePreference.outMediaPreferenceSelected)
-
-                ringVolume.setVolumeLevel(scenePreference.outRingVolume?.setMusicVolume ?: 0, scenePreference.outRingVolume?.maxMusicVolume ?: 0)
-                mediaVolume.setVolumeLevel(scenePreference.outMediaVolume?.setMusicVolume ?: 0, scenePreference.outMediaVolume?.maxMusicVolume ?: 0)
-            }
-
-            radioDoNothing.setOnClickListener { updatePreference(AudioSetVolumePreference.DO_NOTHING) }
-            radioDoPrevious.setOnClickListener { updatePreference(AudioSetVolumePreference.BACK_TO_PREVIOUS) }
-            radioSetCustom.setOnClickListener { updatePreference(AudioSetVolumePreference.CUSTOM) }
-
-            updatePreference(scenePreference.outMediaPreferenceSelected)
-
-            ringVolume.onProgressChangeListener { current, max ->
-                scenePreference.outRingVolume = AudioSettings(max, current)
-            }
-            mediaVolume.onProgressChangeListener { current, max ->
-                scenePreference.outMediaVolume = AudioSettings(max, current)
-            }
-        }
-    }
-
-    private fun updateSelectedPreference(selectedPreference: AudioSetVolumePreference, ringVolume: VolumeProgressLayout, mediaVolume: VolumeProgressLayout, radioDoNothing: AppCompatRadioButton, radioDoPrevious: AppCompatRadioButton, radioSetCustom: AppCompatRadioButton) {
-        scenePreference.outMediaPreferenceSelected = selectedPreference
-
-        //reset all button
-        Timber.d("updateSelectedPreference - > $selectedPreference")
-
-        radioDoNothing.isChecked = false
-        radioDoPrevious.isChecked = false
-        radioSetCustom.isChecked = false
-
-        when (selectedPreference) {
-            AudioSetVolumePreference.CUSTOM -> {
-                showVolume(ringVolume, mediaVolume)
-                radioSetCustom.isChecked = true
-            }
-            AudioSetVolumePreference.BACK_TO_PREVIOUS -> {
-                hideVolume(ringVolume, mediaVolume)
-                radioDoPrevious.isChecked = true
-            }
-            AudioSetVolumePreference.DO_NOTHING -> {
-                hideVolume(ringVolume, mediaVolume)
-                radioDoNothing.isChecked = true
-            }
-        }
-    }
-
-
-    /**
-     * Hide Ring and Media Volumes
-     */
-    private fun hideVolume(ringVolume: VolumeProgressLayout, mediaVolume: VolumeProgressLayout) {
-        ringVolume.visibility = View.GONE
-        ringVolume.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.abc_slide_out_bottom))
-        mediaVolume.visibility = View.GONE
-        mediaVolume.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.abc_slide_out_bottom))
-    }
-
-    /**
-     * Show Ring and Media Volumes
-     */
-    private fun showVolume(ringVolume: VolumeProgressLayout, mediaVolume: VolumeProgressLayout) {
-        ringVolume.visibility = View.VISIBLE
-        ringVolume.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.abc_slide_in_bottom))
-        mediaVolume.visibility = View.VISIBLE
-        mediaVolume.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.abc_slide_in_bottom))
-    }
-
     /**
      * Image Selector Layout
      */
@@ -294,7 +245,7 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
     }
 
     private fun atLeastOneNonMandatoryFieldSelected(): Boolean {
-        return scenePreference.wifiEnabled || scenePreference.isVolumeEnabled()
+        return scenePreference.wifiEnabled || scenePreference.isRingEnabled() || scenePreference.isMediaEnabled()
     }
 
     override fun setUpLocation(locationLayout: LinearLayout?) {

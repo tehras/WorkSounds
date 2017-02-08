@@ -116,7 +116,7 @@ class VolumeNewSettingsFragment : PresenterFragment<VolumeNewSettingsView, Volum
         presenter.setUpName(name_field)
         presenter.setUpLocation(location_layout)
 
-        volume_scroll_view.setOnScrollChangeListener(VolumeNewListener(top_divider_title, mandatory_fields_divider, non_mandatory_fields))
+        volume_scroll_view.viewTreeObserver.addOnScrollChangedListener(VolumeNewListener(volume_scroll_view, top_divider_title, mandatory_fields_divider, non_mandatory_fields))
 
         //animate
         overall_layout.circularReveal(centerX ?: 0, centerY ?: 0, radius ?: 0)

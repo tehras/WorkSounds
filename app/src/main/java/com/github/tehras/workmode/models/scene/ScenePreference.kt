@@ -36,8 +36,12 @@ class ScenePreference : Serializable {
     @SerializedName("wifiEnterState")
     var wifiEnterState: Boolean = true
 
-    fun isVolumeEnabled(): Boolean {
-        return inMediaVolume != null && inRingVolume != null
+    fun isMediaEnabled(): Boolean {
+        return inMediaVolume != null
+    }
+
+    fun isRingEnabled(): Boolean {
+        return inRingVolume != null
     }
 
     fun update(scene: ScenePreference) {

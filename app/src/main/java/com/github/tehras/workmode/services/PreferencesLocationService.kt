@@ -20,7 +20,6 @@ import com.github.tehras.workmode.models.scene.ScenePreference
 import com.github.tehras.workmode.services.ServiceHelper.soundUpdated
 import com.github.tehras.workmode.shared.ScenePreferenceSettings
 import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeServiceInitHelper.Companion.FENCE_RECEIVER_ACTION_ENTRY_KEY
-import com.github.tehras.workmode.ui.preferencesetup.volumesettingslist.VolumeServiceInitHelper.Companion.FENCE_RECEIVER_ACTION_EXIT_KEY
 import com.github.tehras.workmode.ui.splashscreen.SplashScreen
 import com.google.android.gms.awareness.fence.FenceState
 import timber.log.Timber
@@ -92,27 +91,6 @@ class PreferencesLocationService : BroadcastReceiver() {
                 FenceState.TRUE -> {
                     Timber.d("Fence > Currently at work.")
                     enableScene(getScene(fenceState.fenceKey.replace("${FENCE_RECEIVER_ACTION_ENTRY_KEY}_", ""), context), context = context)
-                }
-                FenceState.FALSE -> {
-                    Timber.d("Fence > Currently NOT at work.")
-                }
-                FenceState.UNKNOWN -> {
-                    Timber.d("Fence > Current Location UNKNOWN.")
-                }
-            }
-        } else if (fenceState.fenceKey.startsWith(FENCE_RECEIVER_ACTION_EXIT_KEY, true)) {
-            logEvent(EventType.LOCATION_EVENT, "Fence event received - leaving location")
-
-            Timber.d("Fence exited -> ${fenceState.fenceKey}")
-            when (fenceState.currentState) {
-                FenceState.TRUE -> {
-                    val scene = getScene(fenceState.fenceKey.replace("${FENCE_RECEIVER_ACTION_EXIT_KEY}_", ""), context)
-                    scene?.let {
-                        ServiceHelper.disableScene(scene, context) {
-                            showLeftNotification(context, scene = scene)
-                        }
-                    }
-                    Timber.d("Fence > Currently exiting work.")
                 }
                 FenceState.FALSE -> {
                     Timber.d("Fence > Currently NOT at work.")
@@ -209,39 +187,4 @@ class PreferencesLocationService : BroadcastReceiver() {
     private fun convertToPercent(set: Int, max: Int): String {
         return set.toDouble().times(100.0).div(max.toDouble()).toInt().toString()
     }
-
-    private fun showLeftNotification(context: Context?, scene: ScenePreference) {
-        if (!getGeneralSettings(getPreferences(context)).enableNotifications) {
-            return
-        }
-
-        logEvent(EventType.LOCATION_EVENT, "Showing Exiting Location")
-        context?.let {
-            val builder = NotificationCompat.Builder(context)
-                    .setSmallIcon(scene.selectedTile.blackTile)
-                    .setContentTitle("Volume adjusted to ${convertToPercent(scene.outMediaVolume?.setMusicVolume ?: 0, scene.outMediaVolume?.maxMusicVolume ?: 0)}% media and ${convertToPercent(scene.outRingVolume?.setMusicVolume ?: 0, scene.outRingVolume?.maxMusicVolume ?: 0)}% ring")
-                    .setContentText("${scene.name} Left")
-                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                    .setDefaults(Notification.DEFAULT_VIBRATE)
-
-            val undoAction = android.support.v4.app.NotificationCompat.Action.Builder(R.drawable.ic_undo, "Undo", createPendingIntent(context, scene, true)).build()
-            builder.addAction(undoAction)
-
-            val resultIntent = Intent(context, SplashScreen::class.java)
-
-            val resultPendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    resultIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
-
-            builder.setContentIntent(resultPendingIntent)
-            // Gets an instance of the NotificationManager service
-            val mNotifyMgr = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            // Builds the notification and issues it.
-            mNotifyMgr.notify(NOTIFICATION_ID, builder.build())
-        }
-    }
-
 }
