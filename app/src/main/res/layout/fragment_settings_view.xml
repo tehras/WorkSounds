@@ -55,7 +55,6 @@
         android:layout_marginRight="8dp"
         android:layout_marginTop="27dp"
         android:inputType="number"
-        android:maxEms="5"
         android:text="@string/location_range_meters"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/notification_text"
