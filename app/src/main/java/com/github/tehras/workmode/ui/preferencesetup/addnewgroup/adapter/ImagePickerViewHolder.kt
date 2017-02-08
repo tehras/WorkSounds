@@ -12,13 +12,16 @@ class ImagePickerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     fun bindView(selectedTileImage: TileImage?, tile: TileImage, imageSelected: (TileImage) -> Unit) {
         val selectableView = itemView.findViewById(R.id.tile_selectable)
 
-        (itemView.findViewById(R.id.tile_image) as ImageView).setImageResource(tile.blackTile)
         selectableView.setOnClickListener { imageSelected(tile) }
 
         changeBackground(android.R.color.white, selectableView)
         selectedTileImage?.let {
-            if (it == tile)
+            if (it == tile) {
                 changeBackground(R.color.colorAccent, selectableView)
+                (itemView.findViewById(R.id.tile_image) as ImageView).setImageResource(tile.tile)
+            } else {
+                (itemView.findViewById(R.id.tile_image) as ImageView).setImageResource(tile.blackTile)
+            }
         }
 
     }
