@@ -54,11 +54,11 @@ class VolumeSettingsPresenterImpl @Inject constructor(val preferences: SharedPre
         location_edit_text?.setText(settings?.locationRange?.toString() ?: 200.toString())
         location_edit_text?.addSimpleTextChangeListener {
             try {
-                val range = it.toInt()
-                if (range < 100) {
-                    location_edit_text.setText("100")
+                var range = it.toInt()
+                if (range <= 100) {
+                    range = 100
                 } else if (range > 500) {
-                    location_edit_text.setText("500")
+                    range = 500
                 } else
                     settings?.locationRange = range
             } catch (e: Exception) {

@@ -122,8 +122,8 @@ class PreferencesLocationService : BroadcastReceiver() {
         context?.let {
             val builder = NotificationCompat.Builder(context)
                     .setSmallIcon(scene.selectedTile.blackTile)
-                    .setContentTitle("Volume adjusted to ${convertToPercent(scene.inMediaVolume?.setMusicVolume ?: 0, scene.inMediaVolume?.maxMusicVolume ?: 0)}% media and ${convertToPercent(scene.inRingVolume?.setMusicVolume ?: 0, scene.inRingVolume?.maxMusicVolume ?: 0)}% ring")
-                    .setContentText("${scene.name} Entered")
+                    .setContentTitle("Preferences adjusted - ${if (scene.inMediaVolume != null) "volume: ${convertToPercent(scene.inMediaVolume?.setMusicVolume ?: 0, scene.inMediaVolume?.maxMusicVolume ?: 0)}% " else ""} ${if (scene.inRingVolume != null) "media: ${convertToPercent(scene.inRingVolume?.setMusicVolume ?: 0, scene.inRingVolume?.maxMusicVolume ?: 0)}% " else ""}${if (scene.wifiEnabled) "Wi-Fi ${if (scene.wifiState) "enabled" else "disabled"} " else ""}")
+                    .setContentText("Entered ${scene.name}")
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setDefaults(Notification.DEFAULT_VIBRATE)
 

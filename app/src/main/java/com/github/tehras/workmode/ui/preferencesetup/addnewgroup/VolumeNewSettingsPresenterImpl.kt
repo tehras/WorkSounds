@@ -70,7 +70,7 @@ class VolumeNewSettingsPresenterImpl @Inject constructor(var preferences: Shared
             val inMedia = it.findViewById(R.id.media_container) as LinearLayout?
 
             if (ringEnabled) inRing?.visibility = View.VISIBLE else inRing?.visibility = View.GONE
-            if (mediaEnabled) inRing?.visibility = View.VISIBLE else inRing?.visibility = View.GONE
+            if (mediaEnabled) inMedia?.visibility = View.VISIBLE else inMedia?.visibility = View.GONE
 
             ringSwitch?.setOnCheckedChangeListener { compoundButton, b ->
                 if (b) {
