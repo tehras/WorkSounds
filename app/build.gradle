@@ -15,8 +15,8 @@ android {
         applicationId "com.github.tehras.workmode"
         minSdkVersion 21
         targetSdkVersion 25
-        versionCode 100009
-        versionName "1.0.9"
+        versionCode 1000011
+        versionName "1.0.11"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
